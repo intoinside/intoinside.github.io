@@ -1,11 +1,11 @@
 ---
 layout: default
-title: Archive
+title: Archivio
 ---
 
-# Archive
+# Archivio
 
-Browse all posts by month and year.
+Visualizza tutti i post raggruppati per mese e anno.
 
 {% assign postsByYearMonth = site.posts | group_by_exp: "post", "post.date | date: '%B %Y'" %}
 {% for yearMonth in postsByYearMonth %}
