@@ -44,5 +44,8 @@ nav:
   - title: Blog
     url: /archive
 
+  - title: Profile
+    url: /intoinside
+
   - title: About
     url: /about
