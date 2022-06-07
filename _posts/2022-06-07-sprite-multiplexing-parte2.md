@@ -266,7 +266,7 @@ Subito dopo c'è la routine Irq2. Partirà alla scanline 199 quindi, come per la
 precedente, spostiamo gli sprite in riga 200 e aggiorniamo il colore.
 
 Il risultato del listato è il seguente.
-![Sprite](./resources/vice-16-sprite.png)
+![Sprite](/resources/vice-16-sprite.png)
 
 Q: ma si può fare anche altro nelle routine di interrupt?
 

@@ -28,7 +28,7 @@ Il VIC-II riesce a gestire fino a 8 sprite contemporaneamente presenti sullo sch
 ...e poi impostare i colori, rilevare le collisioni e tante altre proprietà.
 
 In questo esempio farò uso di uno sprite creato a mano con [SpritePad](https://csdb.dk/release/?id=132081)
-![Sprite](./resources/creazione-sprite.png)
+![Sprite](/resources/creazione-sprite.png)
 Come si nota dall'immagine, è uno sprite HiRes con colore principale giallo (7) e colore trasparente blu (6).
 
 Il seguente listato in Assembly (da usare con [KickAssembler](http://theweb.dk/KickAssembler/)) serve a impostare
@@ -115,7 +115,7 @@ Sprites:
 ```
 
 L'esecuzione di questo programma produce il seguente output.
-![Sprite](./resources/vice-8-sprite.png)
+![Sprite](/resources/vice-8-sprite.png)
 
 Ok, questo è il punto di partenza. Nel prossimo post, faremo le cose interessanti!
 
