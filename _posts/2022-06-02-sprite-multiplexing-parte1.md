@@ -121,3 +121,5 @@ Ok, questo è il punto di partenza. Nel prossimo post, faremo le cose interessan
 
 Vuoi fare un commento o discutere i contenuti di questo articolo? Ti aspetto su
 [Gitter](https://gitter.im/intoinside/sprite-multiplexing)!
+
+Le discussioni più interessanti verranno aggiunte qui.
