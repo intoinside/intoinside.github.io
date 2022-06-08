@@ -99,7 +99,7 @@ Baloon:
 .byte $a0,$01,$7f,$40,$01,$3e,$40,$00,$9c,$80,$00,$9c,$80,$00,$49,$00
 .byte $00,$49,$00,$00,$3e,$00,$00,$3e,$00,$00,$3e,$00,$00,$1c,$00	
 ```
-Ricordo, come scritto nel [post 1](2022-06-02-sprite-multiplexing-parte1.html),
+Ricordo, come scritto nel [post 1](/2022/06/02/sprite-multiplexing-parte1/),
 lo sprite può essere generato con [SpritePad](https://csdb.dk/release/?id=132081),
 esportato in Raw, inserito come sequenza di byte (come in questo esempio) oppure incluso tramite direttiva *.import*
 (vedere [qui](http://www.theweb.dk/KickAssembler/webhelp/content/ch03s09.html) il riferimento
