@@ -108,11 +108,11 @@ alla guida di Kick Assembler).
 Poi, supponiamo di voler mostrare questo nuovo sprite nella seconda scanline quindi
 in Irq2, modifichiamo la linea da
 ```
-      lda #28
+      lda #$28
 ```
 in
 ```
-      lda #29
+      lda #$29
 ```
 mantenendo anche la definizione colori del punto precedente otterremo questo
 output:
