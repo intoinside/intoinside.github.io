@@ -468,15 +468,15 @@ Il programma completo [lo potete trovare qui](/resources/multiplexing.asm).
 ## Link utili
 
 Vi lascio alcuni link interessanti:
-* https://kodiak64.com/blog/toggleplexing-sprites-c64 riguarda uno sviluppatore
-che spiega alcune tecniche molto interessanti per gestire tanti sprite 
-mostrando la resa grafica delle soluzioni.
-* https://codebase64.org/doku.php?id=base:sprite_multiplexing documentazione 
-su sprite multiplexing
-* https://forums.tigsource.com/index.php?topic=69477.20 thread su un forum 
-dove si spiegano gli avanzamenti di un gioco scritto in TRSE, in cui si spiega
-la logica per affrontare il multiplexing (quindi applicabile anche ai programmi
-in asm).
+* [Kodia64](https://kodiak64.com/blog/toggleplexing-sprites-c64)] riguarda uno 
+sviluppatore che spiega alcune tecniche molto interessanti per gestire tanti 
+sprite mostrando la resa grafica delle soluzioni.
+* [Codebase64](https://codebase64.org/doku.php?id=base:sprite_multiplexing) 
+documentazione su sprite multiplexing
+* [Tigsource](https://forums.tigsource.com/index.php?topic=69477.20) thread su 
+un forum dove si spiegano gli avanzamenti di un gioco scritto in TRSE, in cui 
+si spiega la logica per affrontare il multiplexing (quindi applicabile anche 
+ai programmi in asm).
 
 Se volete chiarimenti su qualche punto di questo post, scrivetemi su
 [Gitter](https://gitter.im/intoinside/sprite-multiplexing)!
