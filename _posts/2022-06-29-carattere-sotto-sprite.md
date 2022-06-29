@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Calcolo carattere da coordinate
+title: Rilevamento carattere sotto uno sprite
 ---
 
 Eccoci qui con un nuovo post dedicato agli sprite, molto più semplice dei
