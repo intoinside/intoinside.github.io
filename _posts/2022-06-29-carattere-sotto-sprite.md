@@ -22,7 +22,7 @@ Lo scopo di questo post è calcolare la posizione del carattere sottostante
 (in questo caso, è il carattere in posizione 0,0) e rilevare di quale 
 carattere si tratta.
 
-### Funzionamento logico
+## Funzionamento logico
 Il modo per ottenere questa informazione è rapportare la posizione dello sprite
 all'area caratteri.
 La formula è banale e per le due coordinate è:
@@ -49,7 +49,7 @@ più...).
 Bene, da questo indirizzo, è possibile rilevare quale sprite ha generato la
 collisione, per semplicità supponiamo che sia lo sprite #0.
 
-### Codice
+## Codice
 Ok dai, ora un pezzo alla volta e con un po' di strutture di supporto, andiamo
 a trovare il carattere sottostante.
 
@@ -179,7 +179,7 @@ un eventuale riporto all'hi-byte).
 Al termine di queste istruzioni, dentro ScreenPositionAddress abbiamo la
 locazione di memoria nella screen ram del carattere che ci interessa.
 
-### Listato finale
+## Listato finale
 Per comprendere meglio, di seguito ho scritto un listato che posiziona uno 
 sprite e lo muove un pixel alla volta lungo l'asse orizzontale (con un
 rudimentale loop di attesa per rendere fluido e visibile il movimento).
