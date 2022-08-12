@@ -1,15 +1,40 @@
 ---
 layout: post
-title: Dev-env build
+title: Ambiente di sviluppo
 ---
 
-Ciao a tutti! Oggi vi propongo un post che forse doveva arrivare ben prima...
+Ciao a tutti! Vi propongo un post che forse doveva arrivare ben prima...
 ma tant'è...
 
-Oggi descriverò il mio personale ambiente di sviluppo, sul quale creo tutte le
-applicazioni e giochi per il C64 e sul quale creo i listati degli altri post.
+Oggi descriverò il mio personale ambiente di sviluppo, col quale creo tutte le
+applicazioni e giochi per il C64 e col quale creo i listati degli altri post.
 
-Gli elementi che vedremo saranno:
+Non ci saranno descrizioni tecniche dei singoli applicativi, per quelle rimando
+alle numerose documentazioni disponibili in rete che spiegano bene e in modo
+esaustivo (sicuramente più di quanto potrei fare io) come installare e
+configurare i software.
+
+In questa guida, quindi, saranno elencati solo i vari software che utilizzo, 
+divisi tra software indispensabili e consigliati, con eventuali descrizioni per 
+farli funzionare insieme.
+
+Nell'elenco sottostante ci sono anche dei punti indicati con *[TBD]* (cioè To 
+Be Done), verranno discussi in un altro post e non sono fondamentali per lo
+sviluppo di base.
+
+Potrei dedicare (FORSE) un ulteriore post su come solitamente strutturo le mie
+applicazioni, cioè impostazione e suddivisione dei file, trattamento delle 
+risorse e cose di questo tipo, più eventualmente altre info sulla gestione tipo 
+di un progetto (issue, bug, Kanban board, branching con Git ecc...).
+
+Questi ultimi elementi possono sembrare una sovraingegnerizzazione (e in
+effetti per progetti molto piccoli e/o semplici lo è) ma mi sembra interessante
+esporre qualche regola minima per organizzare il lavoro, poi ognuno in coscienza
+valuta quali elementi mettere in atto.
+
+## Introduzione
+
+Gli elementi che utilizzo nello sviluppo delle mie applicazioni sono:
 * Visual Studio Code &#x1F534;
 * JDK &#x1F534;
 * Kick Assembler &#x1F534;
@@ -19,13 +44,15 @@ Gli elementi che vedremo saranno:
 * SpritePad Free &#x1F7E0;
 * CharPad Free &#x1F7E0;
 * SidSfx Editor &#x1F7E0;
-* Account GitHub &#x1F7E1; [TBD]
-* GitHub Pull Requests and Issues Extension &#x1F7E1; [TBD]
-* Account Circle.Ci &#x1F7E2; [TBD]
-* Gradle Build &#x1F7E2; [TBD]
+* Account GitHub &#x1F7E1; *[TBD]*
+* GitHub Pull Requests and Issues Extension &#x1F7E1; *[TBD]*
+* Account Circle.Ci &#x1F7E2; *[TBD]*
+* Gradle Build &#x1F7E2; *[TBD]*
 
 Gli elementi con il simbolo &#x1F534; sono da considerarsi come il minimo
-necessario per l'ambiente di sviluppo.
+necessario per l'ambiente di sviluppo. L'unico elemento con classificazione
+&#x1F535; è consigliato ma, dato che è piuttosto ostico, benché utile, non
+lo inserisco tra gli elementi necessari.
 
 Gli elementi del gruppo &#x1F7E0; sono utili per la creazione delle risorse 
 grafiche e sonore utilizzate nel progetto.
@@ -35,13 +62,12 @@ GitHub al fine di poter gestire il versionamento (ed eventualmente la
 condivisione del codice sorgente in pubblico, gestione delle issue ecc...).
 
 Gli elementi del gruppo &#x1F7E2; consentono di collegare la repository su
-GitHub ad una pipeline CI/CD su Circle.Ci. L'attivazione di questa opzione
-richiede ovviamente la creazione della repository su GitHub.
+GitHub ad una pipeline CI/CD su Circle.Ci.
 
 ## Ambiente di lavoro base &#x1F534;
 
 L'ambiente di lavoro base per lo sviluppo si compone di un editor (VS Code), 
-di un assembler (KickAssembler, che a sua volta necessita di un JRE o JDK per
+di un assembler (KickAssembler, che a sua volta necessita di un JDK per
 funzionare), l'estensione Kick Assembler 8-Bit Retro Studio che facilita la
 scrittura del codice e aggiunge alcune scorciatoie molto utili per lo sviluppo 
 e, infine, di un emulatore su cui vedere i frutti del proprio lavoro (Vice).
@@ -86,23 +112,30 @@ E' sufficiente ricercare l'estensione *Kick Assembler 8-Bit Retro Studio* nello 
 
 Successivamente è necessario modificare alcune opzioni dell'estensione:
 * Kickassembler › Assembler: Jar, deve puntare al file kickass.jar, installato
-al punto precedente
+in precedenza.
 * Kickassembler › Assembler Library Paths, contiene la lista dei path in cui
 sono installate le eventuali librerie. Inizialmente è vuoto.
 * Kickassembler › Debugger: Runtime, punta all'eseguibile del debugger, se
 è stato installato
-* Kickassembler › Emulator: Runtime, punta all'eseguibile dell'emulatore Vice
-* Kickassembler › Java: Runtime, punta al file java.exe del JDK
+* Kickassembler › Emulator: Runtime, punta all'eseguibile dell'emulatore Vice,
+lo installeremo tra poco quindi si può inserire questo dato successivamente.
+* Kickassembler › Java: Runtime, punta al file java.exe del JDK.
 
 ### Vice emulator
 
 Vice è uno tra gli emulatori più conosciuti, supporta diverse macchine Commodore
 (64, Vic20, 128 ecc...). Scaricabile [qui](https://vice-emu.sourceforge.io/)
 
+Ricordarsi di impostare il path di installazione di Vice tra le opzioni
+dell'estensione di Kickassembler.
+
 ### Test
 
 Con questa serie di opzioni impostate, si può eseguire un piccolo programma di 
 test per assicurarsi che tutto, fino a qui, sia definito correttamente.
+
+Quindi, all'interno di VS Code, inserire questo piccolo codice dentro un file
+.asm.
 
 ```
 BasicUpstart2($0810)
@@ -127,13 +160,13 @@ utilizzare nel progetto.
 Nessuno vieta ovviamente di cercare delle risorse già realizzate e di adattarle
 alle proprie necessità, non entro nel merito di questa soluzione.
 Le applicazioni sono le seguenti:
-* CharPad
-* SpritePad
-* SidSfx editor
+* CharPad Free
+* SpritePad Free
+* SidSfx Editor
 
 ### CharPad Free
 
-E' il software che consente di creare un charset personalizzato e una mappa.
+E' il software che consente di creare charset personalizzati e mappe.
 
 ![CharPad Free](/resources/charpad-main-screen.png)
 
@@ -149,22 +182,32 @@ l'organizzazione di gruppi di sprite per produrre le animazioni.
 ![SpritePad Free](/resources/spritepad-main-screen.png)
 
 Anche in questo caso, la versione Free è sufficiente per l'utilizzo base ed è
-scaricabile [qui](http://csdb.dk/release/download.php?id=163858)
+scaricabile [qui](http://csdb.dk/release/download.php?id=163858).
 
 ### SidSfx Editor
 
 Ho scoperto questo software da poco ed è una figata mostruosa! Permette di creare
-dei brevi effetti audio da associare al progetto. Non sto parlando di colonne 
-sonore estese, per quello vi rimando ad altri software, tipo GoatTracker per 
-esempio.
+dei brevi effetti audio da associare al progetto. Non sto parlando delle colonne 
+sonore, per quello vi rimando ad altri software, tipo GoatTracker.
 
 ![SidSfx Editor](/resources/sidsfx-main-screen.png)
 
-Solitamente creo l'effetto che mi interessa e poi lo esporto come file asm da
-integrare.
-Scaricabile [qui](https://agpx.itch.io/sid-sfx-editor)
+Solitamente creo l'effetto che mi interessa e poi lo esporto come file asm e lo
+integro nel progetto.
+Scaricabile [qui](https://agpx.itch.io/sid-sfx-editor).
 
-*Nota bene*: volutamente NON ho inserito tutorial su come utilizzare questi 
-software. Sto semplicemente esponendo come è composto il mio ambiente di
+## Conclusione
+
+Come scritto nell'introduzione, volutamente NON ho inserito tutorial su come 
+utilizzare questi software.
+Sto semplicemente esponendo come è composto il mio ambiente di
 sviluppo. Per informazioni di questo tipo vi invito a leggere la (tanta)
 documentazione a riguardo.
+
+Per ora mi fermo qui, nel prossimo post vedremo i software non necessari, 
+marchiati con &#x1F7E1; e &#x1F7E2;.
+
+Se volete chiarimenti su qualche punto di questo post, scrivetemi su
+[Gitter](https://gitter.im/intoinside/community)!
+
+Le discussioni più interessanti verranno aggiunte qui.
