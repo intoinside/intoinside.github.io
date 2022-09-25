@@ -44,8 +44,8 @@ Gli elementi che utilizzo nello sviluppo delle mie applicazioni sono:
 * SpritePad Free &#x1F7E0;
 * CharPad Free &#x1F7E0;
 * SidSfx Editor &#x1F7E0;
-* Account GitHub &#x1F7E1; *[TBD]*
-* GitHub Pull Requests and Issues Extension &#x1F7E1; *[TBD]*
+* Account GitHub &#x1F7E1; ([Parte2](https://intoinside.github.io/2022/09/25/dev-env-parte2/))
+* GitHub Pull Requests and Issues Extension &#x1F7E1; ([Parte2](https://intoinside.github.io/2022/09/25/dev-env-parte2/))
 * Account Circle.Ci &#x1F7E2; *[TBD]*
 * Gradle Build &#x1F7E2; *[TBD]*
 
