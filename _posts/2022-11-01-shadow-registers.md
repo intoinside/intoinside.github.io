@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Shadow register C128
+title: Shadow registers C128
 ---
 
 Durante la scrittura della libreria [c128lib](https://github.com/c128lib),
