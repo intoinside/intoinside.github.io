@@ -30,14 +30,14 @@ Il codice attiva solo lo sprite 0 e imposta le coordinate agendo sui registri de
 Vic-II. Ecco il risultato (potreste avere uno sprite diverso ma il risultato più
 o meno sarà questo):
 
-![C64 sprite show](../resources/shadow-register-1.png)
+![C64 sprite show](/resources/shadow-register-1.png)
 
 Visto che ho detto che il porting è QUASI trasparente, proviamo a eseguire lo
 stesso codice sul C128. Rammento che, i registri del Vic-II sul C128 sono gli
 stessi del C64, alle stesse locazioni e con lo stesso comportamento. Ecco il
 risultato:
 
-![C128 sprite show](../resources/shadow-register-2.png)
+![C128 sprite show](/resources/shadow-register-2.png)
 
 Il risultato è NIENTE. Alla faccia del porting trasparente.
 
