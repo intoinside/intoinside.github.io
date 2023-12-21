@@ -78,6 +78,15 @@ C128 System Guide):
 200 end
 ```
 
+There are 5 window defined in this program:
+
+* whole screen filled with a string (10-80)
+* (1,1)-(7,20) with a reversed string printed (90-110)
+* (15,15)-(39,20) (empty) with a reversed string printed 6 times (120-140)
+* (30,1)-(39,22) (empty) with a list of current program (150-170)
+* (5,5)-(33,18) (empty) with a reversed string (not visible) and a list of
+current program (180-190)
+
 By running this program you'll get
 
 ![Example 40-cols](/resources/c128-window-40cols.png)
