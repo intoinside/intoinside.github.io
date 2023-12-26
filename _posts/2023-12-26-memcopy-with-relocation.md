@@ -83,14 +83,14 @@ places where few cycles are available, even 600 fewer cycles can make a differen
 For example, consider using this algorithm between the raster interrupt lines.
 
 Let's go into detail about the algorithm to understand how it works and consider
-copy page at $1000 (page 10) into page $2000 (page 20).
+copy page at $1000 (page $10) into page $2000 (page $20).
 This is the initial status of memory.
 
 ![Step 1](/resources/relocation-step-1.jpg)
 
 This is the initial status with page 0 and 1 located at $0000 and $0100.
-As expected, .X should contain source page (10) and .Y should contain destination page
-(20). Current stack is yellow.
+As expected, .X should contain source page ($10) and .Y should contain destination page
+($20). Current stack is yellow.
 
 ``` Assembly
 // Disable interrupt
@@ -107,13 +107,13 @@ As expected, .X should contain source page (10) and .Y should contain destinatio
       sty $d509
 ```
 
-After running the first part of the algorith, memory status has changed:
+After running the first part of the algorithm, memory status has changed:
 
 ![Step 2](/resources/relocation-step-2.jpg)
 
 Interrupt are disabled, a self-mod code is done to point to source page and current
 stack pointer value (for example, $70) is copied into a zero-page location. Last
-operation will relocate stack from page 1 to destination page (20).
+operation will relocate stack from page 1 to destination page ($20).
 
 And now the main part:
 
@@ -157,3 +157,7 @@ The last part, the initial environment is restored:
 
 Stack page is restored to page 1 and then original stack pointer is taken from $FE
 and restored to original value. Lastly, interrupt are reactivated.
+
+This can be a valid alternative if you have to be quick. It is only available on
+Commodore 128 because the relocation of the pages is managed by the MMU. The price
+to pay is greater implementation complexity.
