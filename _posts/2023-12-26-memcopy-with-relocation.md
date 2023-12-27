@@ -161,3 +161,64 @@ and restored to original value. Lastly, interrupt are reactivated.
 This can be a valid alternative if you have to be quick. It is only available on
 Commodore 128 because the relocation of the pages is managed by the MMU. The price
 to pay is greater implementation complexity.
+
+### Update 27/12/2023
+
+[Daniel Hotop](https://www.youtube.com/@oziphantom9465) sent me an improvement.
+There are two main differences:
+* relocating of page 0 and 1
+* unrolled loop
+
+In the first example, only page 1 was relocated. In this example, page 0 is also
+relocated and mapped onto the source page. This trick allows you to run LDAs with
+*Zeropage addressing* instead of *Indexed absolute addressing* which saves a
+clock cycle (and also one byte).
+
+With cycle unrolling, the size increases significantly but you can save 2 cycles for
+DEX and 2 cycles for BNE needed for loop handling.
+
+This solution also requires the source page in .X and destination page in .Y.
+
+``` Assembly
+      .label TEMP   = $fe
+
+      sei             // 2 cycles - 1 byte
+      stx $d507       // 4 cycles - 3 byte
+      stx Src1 + 1    // 4 cycles - 3 byte
+      stx Src2 + 1    // 4 cycles - 3 byte
+      tsx             // 2 cycles - 1 byte
+      stx TEMP        // 3 cycles - 2 byte
+      sty $d509       // 4 cycles - 3 byte
+      ldx #0          // 2 cycles - 2 byte
+      txs             // 2 cycles - 1 byte
+
+      lda $ff         // 3 cycles - 2 byte
+      pha             // 3 cycles - 1 byte
+      lda $fe         // 3 cycles - 2 byte
+      pha             // 3 cycles - 1 byte
+
+      // Other lda-pha pairs
+
+      lda $2          // 3 cycles - 2 byte
+      pha             // 3 cycles - 1 byte
+  :Src1
+      lda $ff01       // 4 cycles - 3 byte
+      pha             // 3 cycles - 1 byte
+  :Src2
+      lda $ff00       // 4 cycles - 3 byte
+      pha             // 3 cycles - 1 byte
+
+      ldy #0          // 2 cycles - 2 byte
+      sty $d507       // 4 cycles - 3 byte
+      ldy #1          // 2 cycles - 2 byte
+      sty $d509       // 4 cycles - 3 byte
+      ldx TEMP        // 3 cycles - 2 bytes
+      txs             // 2 cycles - 1 byte
+
+      cli             // 2 cycles - 1 byte
+      rts             // 6 cycles - 1 byte
+```
+
+Pure copy requires 1538 cycles, full subroutine requires 1590 cycles. The improvement
+compared to the single relocation solution is 44%. Subroutine size increased to
+804 bytes.
