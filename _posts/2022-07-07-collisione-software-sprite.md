@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Sprite collision
+tags: sprite collision sprite-collision commodore assembly 6502
 ---
 
 Ben trovati in questo nuovo post. Il filone degli sprite prosegue e questa
@@ -8,20 +9,21 @@ volta si parla di collisioni.
 
 ## Introduzione
 Il C64, in tema di collisioni di sprite, mette a disposizione due registri sul
-Vic-II: $d01e e $d01f.
-Per entrambi i registri, ogni bit mappa uno sprite (da #0 a #7) ed è impostato 
+Vic-II: [$d01e](https://c128lib.github.io/Reference/D000#D01E) e
+[$d01f](https://c128lib.github.io/Reference/D000#D01F).
+Per entrambi i registri, ogni bit mappa uno sprite (da #0 a #7) ed è impostato
 a 1 se il relativo sprite partecipa ad una collisione.
 
-Il primo registro mappa le collisioni tra sprite, il secondo riguarda le 
+Il primo registro mappa le collisioni tra sprite, il secondo riguarda le
 collisioni tra gli sprite e il background.
 Dei due, in questo post, ci interessa (almeno in parte) il primo dei due.
 
 Se sfruttiamo il primo registro, stiamo parlando di collisione *hardware*.
-Guardando il registro, ci si rende conto che tante informazioni sulla 
-collisione sono fuse insieme rendendoci impossibile, in molte situazioni, 
+Guardando il registro, ci si rende conto che tante informazioni sulla
+collisione sono fuse insieme rendendoci impossibile, in molte situazioni,
 capire quali sprite sono stati coinvolti.
 
-Se, leggendo il registro, viene restituito il valore %10000011, possiamo 
+Se, leggendo il registro, viene restituito il valore %10000011, possiamo
 capire che lo sprite #0 e lo sprite #1 sono in collisione.
 Fino a qui, è facile.
 
@@ -36,8 +38,8 @@ la seguente.
 
 ![Collisione a tre sprite](/resources/collisione-2.png)
 
-Si può perciò evincere che, a fronte di una stessa lettura, non è possibile 
-determinare con certezza tra quali sprite è avvenuta la collisione: se il bit 
+Si può perciò evincere che, a fronte di una stessa lettura, non è possibile
+determinare con certezza tra quali sprite è avvenuta la collisione: se il bit
 di uno sprite è 1 vuol dire che quello sprite ha avuto una collisione, ma,
 quando ci sono di mezzo più di due sprite, non c'è modo di sapere con quale
 sprite è avvenuta la collisione.
@@ -47,12 +49,12 @@ informazione.
 
 ## Funzionamento logico
 
-Si può cercare una soluzione costruendosi le cose in casa, scegliendo una 
+Si può cercare una soluzione costruendosi le cose in casa, scegliendo una
 via completamente software oppure ibrida.
 
 Ho avuto questo problema nel mio gioco
-[ForestSaver](https://github.com/intoinside/ForestSaver), dove ci sono molti 
-sprite contemporaneamente visibili e ho la necessità di sapere tra chi 
+[ForestSaver](https://github.com/intoinside/ForestSaver), dove ci sono molti
+sprite contemporaneamente visibili e ho la necessità di sapere tra chi
 avvengono le collisioni.
 
 Ho perciò scelto di implementare una subroutine per realizzare un rilevatore
@@ -61,12 +63,12 @@ La mia soluzione potrebbe essere anche *ibrida* se si appoggiasse
 al registro del Vic-II per ottimizzare i tempi di esecuzione.
 
 Sostanzialmente, l'idea di base della mia soluzione è verificare se un punto
-di uno sprite (ad esempio, il vertice in alto a sinitra) si trova all'interno 
+di uno sprite (ad esempio, il vertice in alto a sinitra) si trova all'interno
 dell'area di un altro sprite.
 Se è così allora la collisione è accertata altrimenti... no.
 
 In questo post, ripropongo la subroutine utilizzata nel gioco, che consente di
-verificare se lo sprite #0 (il ranger) ha avuto una collisione con uno degli 
+verificare se lo sprite #0 (il ranger) ha avuto una collisione con uno degli
 altri sprite degli "omini" del gioco.
 
 La soluzione si compone di una prima parte in cui si impostano gli sprite da
@@ -74,7 +76,7 @@ sottoporre a verifica e della subroutine che esegue tutto il lavoro.
 
 ## Implementazione
 
-L'esempio che vedremo verificherà se lo sprite #1 è in collisione con il 
+L'esempio che vedremo verificherà se lo sprite #1 è in collisione con il
 ranger (sprite #0).
 
 Affrontiamo subito la prima parte, cioè quella di impostazione dei dati per
@@ -83,12 +85,12 @@ effettuare la verifica.
 E' piuttosto semplice e consiste nell'assegnare a due variabili (*OtherX* e
 *OtherY*) le coordinate dello sprite da controllare (nel nostro caso, lo
 sprite #1).
-La variabile *OtherX* è una word (16 bit) perché la coordinata X può andare 
+La variabile *OtherX* è una word (16 bit) perché la coordinata X può andare
 oltre ai 255 pixel.
 
 Per sapere se uno sprite si trova oltre questo limite, si fa uso del registro
 $d010 che imposta i bit a 1 se il relativo sprite è al di là dei 255 pixel.
-Quindi, visto che stiamo parlando dello sprite #1, è sufficiente usare la 
+Quindi, visto che stiamo parlando dello sprite #1, è sufficiente usare la
 maschera %00000010 e metterla in *AND* con la lettura del registro $d010.
 
 Se il risultato è diverso da zero allora siamo oltre i 255 pixel, pertanto la
@@ -99,8 +101,8 @@ Questa impostazione è fatta con le prime righe del seguente snippet.
 ```
     lda $d010       // Leggi il registro
     and #%00000010  // applica la maschera per conoscere lo stato dello
-    beq !+          // sprite #1, se il risultato (memorizzato in A) è 0 salta 
-    lda #$1         // alla label ! altrimenti imposta in A il valore 1 
+    beq !+          // sprite #1, se il risultato (memorizzato in A) è 0 salta
+    lda #$1         // alla label ! altrimenti imposta in A il valore 1
   !:
     sta SpriteCollision.OtherX + 1
     lda $d002
@@ -113,7 +115,7 @@ Questa impostazione è fatta con le prime righe del seguente snippet.
 Le righe successive impostano la parte bassa di *OtherX* con la coordinata
 X del registro $d002 e la coordinata Y dal registro $d003 in *OtherY*.
 
-L'ultima istruzione richiama la subroutine per effettuare la verifica, il cui 
+L'ultima istruzione richiama la subroutine per effettuare la verifica, il cui
 codice è il seguente.
 
 ```
@@ -135,7 +137,7 @@ SpriteCollision: {
     adc #21
     sta RangerY2
 
-// La collisione avviene se le coordinate dell'altro sprite sono 
+// La collisione avviene se le coordinate dell'altro sprite sono
 // all'interno del contenitore del ranger.
 // Questo avviene se
 // RangerX1 < OtherX < RangerX2
@@ -188,13 +190,13 @@ Non c'è da spaventarsi di fronte ad alcune istruzioni presenti nel listato.
 Il significato è il seguente:
 * add16value(x, y): aggiunge il valore x alla variabile y e memorizza il
 risultato (simile ad *adc* ma opera su valori a 16 bit)
-* bmi16(x, y) effettua le comparazioni tra due variabili a 16 bit e imposta i 
+* bmi16(x, y) effettua le comparazioni tra due variabili a 16 bit e imposta i
 flag per l'esecuzione di un'istruzione *bmi*.
 
 ### Note
 * La collisione viene rilevata basandosi, come detto all'inizio,
 sul vertice in alto a sinistra dello sprite #1. Se volessimo utilizzare il
-centro dello sprite basta aggiungere 12 a *OtherX* e 10 a *OtherY* (attenzione 
+centro dello sprite basta aggiungere 12 a *OtherX* e 10 a *OtherY* (attenzione
 a gestire correttamente la parte alta di *OtherX* qualora l'aggiunta dovesse
 oltrepassare i 255).
 
@@ -212,12 +214,12 @@ trasparenti). Questa subroutine non è così raffinata.
 Entrando nell'argomento del multiplexing, l'utilizzo di una rilevatore software
 diventa molto importante se non essenziale.
 
-Dato che in questa subroutine, la verifica avviene tramite confronto di 
+Dato che in questa subroutine, la verifica avviene tramite confronto di
 coordinate, può essere completamente svincolata dai registri del Vic-II.
 Se consideriamo l'esempio di uno dei [precedenti post](https://intoinside.github.io/2022/06/20/sprite-multiplexing-organizzare/),
-dove gli 8 sprite hardware mappano gli sprite "virtuali", è sufficiente 
+dove gli 8 sprite hardware mappano gli sprite "virtuali", è sufficiente
 sostituire le istruzioni che leggono i registri di posizione degli sprite con
-la struttura che memorizza le posizioni degli sprite virtuali e il gioco è 
+la struttura che memorizza le posizioni degli sprite virtuali e il gioco è
 fatto.
 
 ## Conclusioni
@@ -232,4 +234,3 @@ Se volete chiarimenti su qualche punto di questo post, scrivetemi su
 [Gitter](https://gitter.im/intoinside/sprite-multiplexing)!
 
 Le discussioni più interessanti verranno aggiunte qui.
-

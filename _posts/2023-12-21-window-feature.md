@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Window feature on C128
+tags: window commodore-128 c128 assembly
 ---
 
 This post will explain windowing feature of C128, how to use it

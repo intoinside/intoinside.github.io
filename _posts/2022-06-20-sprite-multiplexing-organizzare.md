@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Sprite multiplexing - organizzare
+tags: sprite sprite-multiplexing commodore assembly 6502
 ---
 
 ## Premessa
@@ -19,57 +20,57 @@ canonici 8 sprite hardware, si deve ingannare l'utente sfruttando le capacità
 grafiche del sistema.
 
 Il risultato è ottenuto utilizzando l'interrupt raster in prossimità della
-coordinata Y a cui vogliamo disegnare gli sprite. Di fatto lo stesso sprite 
+coordinata Y a cui vogliamo disegnare gli sprite. Di fatto lo stesso sprite
 viene spostato continuamente da una posizione all'altra durante il disegno di
 ogni immagine.
 Il meccanismo diventa complesso perché il nostro programma deve farsi carico di
-tenere traccia di tutti gli sprite da visualizzare (che d'ora in poi 
-chiameremo sprite "virtuali"), non potendo fare affidamento ai registri 
+tenere traccia di tutti gli sprite da visualizzare (che d'ora in poi
+chiameremo sprite "virtuali"), non potendo fare affidamento ai registri
 destinati a tracciare gli 8 in hardware.
 
-Si tratta quindi di fare un lavoro di collaborazione tra il main program e 
+Si tratta quindi di fare un lavoro di collaborazione tra il main program e
 l'interrupt (d'ora in poi irq) raster:
-* il main si deve occupare della logica del programma e del posizionamento (ma 
-anche colore, dimensioni, forma ecc... insomma, qualunque aspetto di qualunque 
+* il main si deve occupare della logica del programma e del posizionamento (ma
+anche colore, dimensioni, forma ecc... insomma, qualunque aspetto di qualunque
 sprite del programma).
 Deve sostanzialmente specificare come devono funzionare le cose.
-* l'interrupt raster si deve occupare della visualizzazione, in particolare 
+* l'interrupt raster si deve occupare della visualizzazione, in particolare
 della mappatura degli sprite virtuali sugli 8 sprite hardware.
 
 Il main farà l'init di tutte le variabili utilizzate, degli sprite e preparerà
-il lancio dell'irq raster. Inoltre, a scopo didattico, nel corso del 
+il lancio dell'irq raster. Inoltre, a scopo didattico, nel corso del
 programma, muoverà gli sprite in modo casuale.
 
 Saranno presenti due routine legate agli irq raster:
-* una si occuperà di ordinare gli sprite in base alla coordinata Y (nel corso 
+* una si occuperà di ordinare gli sprite in base alla coordinata Y (nel corso
 del post spiegheremo perché)
 * un'altra si occuperà di visualizzare gli sprite e partirà su più scanline in
 base agli sprite da visualizzare.
 
-Bene, con il sufficiente grado di casino generato da queste righe, iniziamo a 
+Bene, con il sufficiente grado di casino generato da queste righe, iniziamo a
 dire qualcosa sul main program.
 
 ## Funzioni accessorie
 
-Definiamo intanto la subroutine che prepara il lancio dell'irq raster, molte 
-delle cose sono già state viste nelle puntate precedenti. Notimo solo la 
+Definiamo intanto la subroutine che prepara il lancio dell'irq raster, molte
+delle cose sono già state viste nelle puntate precedenti. Notimo solo la
 scanline di lancio impostata a *IrqSortingLine* (una label pari a $fc => 252):
 ```
-InitRaster: {    
+InitRaster: {
     sei
     lda #<IrqSorting
     sta $0314
     lda #>IrqSorting
     sta $0315
-    lda #$7f           
+    lda #$7f
     sta $dc0d
-    lda #$01           
+    lda #$01
     sta $d01a
-    lda #27            
+    lda #27
     sta $d011
     lda #IrqSortingLine
     sta $d012
-    lda $dc0d          
+    lda $dc0d
     cli
     rts
 }
@@ -127,11 +128,11 @@ Di seguito un'altra macro per impostare lo stato iniziale degli sprite virtuali:
     bpl initloop
 }
 ```
-Come vedere qui si fa uso della subroutine *GetRandom* vista prima. Qui si 
+Come vedere qui si fa uso della subroutine *GetRandom* vista prima. Qui si
 impostano le posizioni iniziali x e y degli sprite virtuali inserendole nei
 vettori *sprx* e *spry*. Poi si imposta la struttura degli sprite recuperandola
 dall'area di memoria in cui è definito ($3f) e inserendola in *sprf*
-Infine si imposta il colore di ogni sprite in *sprc*. Il colore deve essere 
+Infine si imposta il colore di ogni sprite in *sprc*. Il colore deve essere
 diverso da nero altrimenti si confonde con lo sfondo.
 
 ## Main program
@@ -144,12 +145,12 @@ Start: {
     lda #00
     sta $d020
     sta $d021
-    ldx #MAXSPR    
+    ldx #MAXSPR
     stx numsprites
 
     InitSpritesData()
 
-  MainLoop:        
+  MainLoop:
     inc SpriteUpdateFlag
 
   MoveLoop:
@@ -179,29 +180,29 @@ Start: {
   Direction:  .byte 0
 }
 ```
-Come si può notare, tutta la parte precedente a *MainLoop* è dedicata 
+Come si può notare, tutta la parte precedente a *MainLoop* è dedicata
 all'inizializzazione del programma. La label *MAXSPR* indica il numero massimo
 di sprite da generare.
-Terminata la parte di init, inizia il *MainLoop* del programma che viene 
+Terminata la parte di init, inizia il *MainLoop* del programma che viene
 ripetuto all'infinito.
 
 La prima cosa che viene fatta all'inizio di un nuovo loop è assicurarsi
-del corretto ordinamento degli sprite nel vettore. Non è questo il posto dove 
-viene eseguita questa operazione bensì nel *IrqSorting*. Perciò, al main, non 
-resta che richiedere un'ordinamento (impostando a 1 la variabile "guardia" 
+del corretto ordinamento degli sprite nel vettore. Non è questo il posto dove
+viene eseguita questa operazione bensì nel *IrqSorting*. Perciò, al main, non
+resta che richiedere un'ordinamento (impostando a 1 la variabile "guardia"
 *SpriteUpdateFlag*) e attendere che questo venga fatto nell'apposito irq (che
 provvederà a resettare la guardia a lavori terminati).
 
-Supponendo di aver ottenuto il via libera per procedere, ora il main si 
+Supponendo di aver ottenuto il via libera per procedere, ora il main si
 incarica di muovere gli sprite, e lo fa:
 * per x, aggiungendo un valore pari a x / 8
-  * trasferisco x su a, eseguo tre volte *lsr* (shift logico a destra che 
+  * trasferisco x su a, eseguo tre volte *lsr* (shift logico a destra che
   equivale a dividere per 2)
 * per y, aggiungendo o togliendo 1 alla coordinata y precedente
 Il procedimento viene ripetuto per tutti gli sprite dopodichè si ritorna a
 *MainLoop* e si ricomincia da capo.
 
-In un programma serio e non didattico come questo, il posizionamento può essere 
+In un programma serio e non didattico come questo, il posizionamento può essere
 determinato da una funzione più raffinata, oppure può dipendere da cosa viene
 premuto sulla tastiera o da come viene utilizzato il joystick. Inoltre ci sarebbe
 tutta la logica di funzionamento. Qui ovviamente non c'è niente di tutto ciò,
@@ -228,13 +229,13 @@ ogni scanline - se volete capire il perchè di questo numero vi lascio il link
 di questo post su [Lemon64](https://www.lemon64.com/forum/viewtopic.php?t=71390&sid=a0e7eca10fd18beae6e00a8e63cb8152))
 e perciò deve avere già tutto pronto per visualizzare.
 
-Nel suo scorrere dall'alto al basso, la subroutine di disegno deve solo 
+Nel suo scorrere dall'alto al basso, la subroutine di disegno deve solo
 disegnare gli sprite che si trovano sulla scanline corrente. Se non ci fosse la
 fase di ordinamento, ad ogni scanline dovrebbe verificare quale sprite, tra tutti
 quelli presenti, deve essere disegnato nella scanline corrente. Ci vuole tempo
 per questa verifica, tempo che non c'è, quindi l'ordinamento è necessario.
 
-Il lavoro di ordinamento quindi viene eseguito quando la scanline è oltre lo 
+Il lavoro di ordinamento quindi viene eseguito quando la scanline è oltre lo
 schermo visibile, partendo quindi come detto prima sulla linea 252.
 Anche qui non c'è tutto il tempo del mondo ma sicuramente possiamo fare le cose
 con relativa calma in modo da essere pronti al prossimo rendering.
@@ -243,7 +244,7 @@ Naturalmente, l'ordinamento gestirà oltre alla posizione y (nell'array *sortspr
 anche la posizione x (*sortsprx*), terrà traccia del colore (*sortsprc*)
 e del puntatore all'immagine da mostrare (*sortsprf*).
 Nel codice del irq c'è anche l'impostazione della scanline a cui deve essere
-lanciato l'irq raster, che raccoglierà gli array ordinati e disporrà la 
+lanciato l'irq raster, che raccoglierà gli array ordinati e disporrà la
 visualizzazione.
 
 ### Ordinamento
@@ -267,7 +268,7 @@ IrqSorting: {
     lda #$00
     sta SpriteUpdateFlag
     lda numsprites                  // Prendiamo il numero di sprite
-    sta SortedSprites               // Se zero non c'è bisogno di 
+    sta SortedSprites               // Se zero non c'è bisogno di
     bne irq1_beginsort              // ordinare
 
   irq1_nonewsprites:
@@ -281,7 +282,7 @@ IrqSorting: {
     beq irq1_nospritesatall
     lda #$00                        // Preparazione dell'irq di display
     sta sprirqcounter
-    lda #<IrqDisplay 
+    lda #<IrqDisplay
     sta $0314
     lda #>IrqDisplay
     sta $0315
@@ -293,27 +294,27 @@ IrqSorting: {
 
     jmp $ea81
 
-  irq1_beginsort: 
+  irq1_beginsort:
     ldx #MAXSPR
     dex
     cpx SortedSprites
     bcc irq1_cleardone
     lda #$ff                        // Imposta gli sprite inutilizzati con
-  irq1_clearloop: 
+  irq1_clearloop:
     sta spry,x                      // la coordinata Y $ff
     dex                             // finiranno così in fondo all'array
     cpx SortedSprites               // ordinato
     bcs irq1_clearloop
-  irq1_cleardone: 
+  irq1_cleardone:
     ldx #$00
-  irq1_sortloop:  
+  irq1_sortloop:
     ldy sortorder+1,x               // Codice di ordinamento, algoritmo
     lda spry,y                      // preso da Dragon Breed -)
     ldy sortorder,x
     cmp spry,y
     bcs irq1_sortskip
     stx irq1_sortreload+1
-  irq1_sortswap:   
+  irq1_sortswap:
     lda sortorder+1,x
     sta sortorder,x
     sty sortorder+1,x
@@ -325,17 +326,17 @@ IrqSorting: {
     ldy sortorder,x
     cmp spry,y
     bcc irq1_sortswap
-  irq1_sortreload: 
+  irq1_sortreload:
     ldx #$00
-  irq1_sortskip:   
+  irq1_sortskip:
     inx
     cpx #MAXSPR-1
     bcc irq1_sortloop
     ldx SortedSprites
-    lda #$ff                       // $ff è l'indicatore di fine per 
+    lda #$ff                       // $ff è l'indicatore di fine per
     sta sortspry,x                 // la routine
     ldx #$00
-  irq1_sortloop3:  
+  irq1_sortloop3:
     ldy sortorder,x                // Giro finale
     lda spry,y                     // Copia delle variabili nell'array
     sta sortspry,x                 // ordinato
@@ -357,31 +358,31 @@ un dogma, basta sapere che al termine dell'elaborazione, troveremo gli array
 di sort (cioè tutti quelli che iniziano con sort*) pronti per essere utilizzati
 nella fase di visualizzazione.
 
-Nello sviluppo di un gioco, tendenzialmente, questa subroutine e quella 
-successiva di display non ne farei oggetto di modifiche. Mi concentrerei 
+Nello sviluppo di un gioco, tendenzialmente, questa subroutine e quella
+successiva di display non ne farei oggetto di modifiche. Mi concentrerei
 piuttosto sulla logica e sulle regole che governano tutto.
 
 ### Visualizzazione
 ```
-IrqDisplay: {          
+IrqDisplay: {
     dec $d019
     lda #GREEN
     sta $d020
-  irq2_direct:     
+  irq2_direct:
     ldy sprirqcounter               // Legge il numero del prossimo sprite
     lda sortspry,y                  // Legge la coordinata y
     clc
     adc #$10                        // Calcola 16 linee a partire dalla y
     bcc irq2_notover                // che saranno il termine di questo irq
     lda #$ff                        // Il termine deve essere entro $ff
-  irq2_notover:   
+  irq2_notover:
     sta tempvariable
-  irq2_spriteloop: 
+  irq2_spriteloop:
     lda sortspry,y
     cmp tempvariable                // Irq terminato?
     bcs irq2_endspr
     ldx physicalsprtbl2,y
-    sta $d001,x          
+    sta $d001,x
     lda sortsprx,y
     asl
     sta $d000,x
@@ -390,19 +391,19 @@ IrqDisplay: {
     ora ortbl,x
     sta $d010
     jmp irq2_msbok
-  irq2_lowmsb:    
+  irq2_lowmsb:
     lda $d010
     and andtbl,x
     sta $d010
-  irq2_msbok:     
-    ldx physicalsprtbl1,y     
+  irq2_msbok:
+    ldx physicalsprtbl1,y
     lda sortsprf,y
-    sta $07f8,x               
+    sta $07f8,x
     lda sortsprc,y
     sta $d027,x
     iny
     bne irq2_spriteloop
-  irq2_endspr:    
+  irq2_endspr:
     cmp #$ff                        // Raggiunto il termine?
     beq irq2_lastspr
     sty sprirqcounter
@@ -415,10 +416,10 @@ IrqDisplay: {
     sta $d020
     jmp $ea81
 
-  irq2_lastspr:  
+  irq2_lastspr:
     lda #<IrqSorting                // Gestito l'ultimo sprite
     sta $0314                       // Si prepara un nuovo sort
-    lda #>IrqSorting                
+    lda #>IrqSorting
     sta $0315
     lda #IrqSortingLine
     sta $d012
@@ -430,23 +431,23 @@ IrqDisplay: {
 Questo è il listato della subroutine che esegue la visualizzazione degli sprite.
 C'è tanta roba quindi analizziamola con calma.
 
-La prima istruzione esegue la conferma del lancio del Irq, segue poi un cambio 
+La prima istruzione esegue la conferma del lancio del Irq, segue poi un cambio
 di colore bordo in verde.
 Serve a indicare a video, a scopo di debug, quando l'irq è partito. Lo stesso
 meccanismo era presente nella subroutine di ordinamento.
 
-Il funzionamento in generale è quello di posizionare, ad ogni scanline, tutti 
+Il funzionamento in generale è quello di posizionare, ad ogni scanline, tutti
 gli sprite che si trovano nelle vicinanze. Una volta che il gruppo di sprite
-vicini è stato disegnato, l'algoritmo valuta se lanciare un irq su una nuova 
+vicini è stato disegnato, l'algoritmo valuta se lanciare un irq su una nuova
 scanline più in basso o se lanciare un irq di sorting (nel caso in cui tutti
 gli sprite siano già stati disegnati).
 
-Il primo blocco prende lo sprite che deve essere disegnato (il cui indice è 
+Il primo blocco prende lo sprite che deve essere disegnato (il cui indice è
 *sprirqcounter*) e ne recupera la coordinata y. A questa coordinata aggiunge il
 valore 16 e il risultato sarà la linea a cui terminerà l'irq. Subito dopo ci si
 assicura che la coordinata finale dell'irq non sia oltre 255.
 
-Se lo sprite da disegnare non è oltre alla coordinata finale dell'irq, si 
+Se lo sprite da disegnare non è oltre alla coordinata finale dell'irq, si
 procede al disegno recuperando coordinate, colori e forma dagli array.
 Questo avviene nella parte da *irq2_spriteloop* a *irq2_endspr*.
 In questo blocco:
@@ -468,14 +469,14 @@ Il programma completo [lo potete trovare qui](/resources/multiplexing.asm).
 ## Link utili
 
 Vi lascio alcuni link interessanti:
-* [Kodia64](https://kodiak64.com/blog/toggleplexing-sprites-c64)] riguarda uno 
-sviluppatore che spiega alcune tecniche molto interessanti per gestire tanti 
+* [Kodiak64](https://kodiak64.com/blog/toggleplexing-sprites-c64)] riguarda uno
+sviluppatore che spiega alcune tecniche molto interessanti per gestire tanti
 sprite mostrando la resa grafica delle soluzioni.
-* [Codebase64](https://codebase64.org/doku.php?id=base:sprite_multiplexing) 
+* [Codebase64](https://codebase64.org/doku.php?id=base:sprite_multiplexing)
 documentazione su sprite multiplexing
-* [Tigsource](https://forums.tigsource.com/index.php?topic=69477.20) thread su 
-un forum dove si spiegano gli avanzamenti di un gioco scritto in TRSE, in cui 
-si spiega la logica per affrontare il multiplexing (quindi applicabile anche 
+* [Tigsource](https://forums.tigsource.com/index.php?topic=69477.20) thread su
+un forum dove si spiegano gli avanzamenti di un gioco scritto in TRSE, in cui
+si spiega la logica per affrontare il multiplexing (quindi applicabile anche
 ai programmi in asm).
 
 Se volete chiarimenti su qualche punto di questo post, scrivetemi su

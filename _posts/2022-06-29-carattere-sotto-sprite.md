@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Rilevamento carattere sotto uno sprite
+tags: sprite character commodore assembly 6502
 ---
 
 Eccoci qui con un nuovo post dedicato agli sprite, molto più semplice dei
@@ -19,7 +20,7 @@ nei quattro angoli ho volutamente messo un punto luminoso per indicare il
 vertice.
 
 Lo scopo di questo post è calcolare la posizione del carattere sottostante
-(in questo caso, è il carattere in posizione 0,0) e rilevare di quale 
+(in questo caso, è il carattere in posizione 0,0) e rilevare di quale
 carattere si tratta.
 
 ## Funzionamento logico
@@ -33,17 +34,17 @@ Riga carattere = (Y - 50) / 8
 
 I due valori 8 delle formule sono le dimensioni in pixel del singolo carattere.
 
-Per chiarezza, la formula consente di trovare il carattere sotto il punto in 
+Per chiarezza, la formula consente di trovare il carattere sotto il punto in
 alto a sinistra dello sprite.
 
 Supponiamo di voler calcolare quale sia il carattere sulla griglia a partire
-dalle coordinate x,y. Possiamo immaginare, per esempio, che queste x,y 
+dalle coordinate x,y. Possiamo immaginare, per esempio, che queste x,y
 appartengano ad uno sprite che ha effettuato una collisione con un carattere
 sullo schermo.
 
-La collisione può essere rilevata con diverse tecniche, una di queste è 
+La collisione può essere rilevata con diverse tecniche, una di queste è
 monitorare lo stato del registro del Vic-II raggiungibile all'indirizzo $d01f
-(si, come ho detto, esistono altri modi più efficienti, più eleganti, più più 
+(si, come ho detto, esistono altri modi più efficienti, più eleganti, più più
 più...).
 
 Bene, da questo indirizzo, è possibile rilevare quale sprite ha generato la
@@ -55,7 +56,7 @@ a trovare il carattere sottostante.
 
 ![Posizione sprite iniziale](/resources/coordinate-schermo-c64-1.png)
 
-Consideriamo la situazione qui sopra, abbiamo lo sprite #0 che viene definito 
+Consideriamo la situazione qui sopra, abbiamo lo sprite #0 che viene definito
 con queste istruzioni:
 
 ```
@@ -71,11 +72,11 @@ con queste istruzioni:
     sta $d015
 ```
 
-Codice già visto in precedenza: impostazione della forma dello sprite, 
+Codice già visto in precedenza: impostazione della forma dello sprite,
 posizionamento sulle coordinate (68, 80) e attivazione. E' minimale, ho
 inserito il minimo indispensabile per l'esempio.
 
-Con questa condizione di partenza, procediamo al calcolo del carattere. 
+Con questa condizione di partenza, procediamo al calcolo del carattere.
 Valutiamo la coordinata Y:
 
 ```
@@ -88,13 +89,13 @@ Valutiamo la coordinata Y:
 ```
 La prima istruzione legge la coordinata Y dello sprite e inserisce il valore
 nel registro A. Subito dopo, eseguo la sottrazione di 50 (pari al bordo
-superiore). Di seguito ci sono tre istruzioni *lsr*. Ogni istruzione *lsr* 
+superiore). Di seguito ci sono tre istruzioni *lsr*. Ogni istruzione *lsr*
 esegue uno spostamento logico di bit verso destra del contenuto del registro A.
 
 ![Triplo lsr per y](/resources/triplo-lsr-y.png)
 
 Come si può notare, lo spostamento a destra dei bit genera un valore binario
-che è la metà del precedente. Equivale, perciò, ad una divisione intera per 2, 
+che è la metà del precedente. Equivale, perciò, ad una divisione intera per 2,
 con perdita del resto. Replicando tre volte la divisione, si ottiene la
 divisione per 8.
 
@@ -157,7 +158,7 @@ snippet in un blocco più complesso.
 
 Per rilevare il carattere presente ad una determinata coordinata, dobbiamo
 cercare individuare l'indirizzo di memoria nella ScreenRam e, da lì, eseguire
-una lettura. L'indirizzo è un valore a 16 bit quindi per gestirlo useremo una 
+una lettura. L'indirizzo è un valore a 16 bit quindi per gestirlo useremo una
 variabile così definita:
 
 ```
@@ -173,14 +174,14 @@ interesse.
 
 Dopo, con il codice già visto, si calcola la coordinata X del carattere. Il
 valore, presente nel registro A, viene sommato alla variabile
-ScreenPositionAddress (il primo *adc* fa la somma, il secondo *adc*, aggiunge 
+ScreenPositionAddress (il primo *adc* fa la somma, il secondo *adc*, aggiunge
 un eventuale riporto all'hi-byte).
 
 Al termine di queste istruzioni, dentro ScreenPositionAddress abbiamo la
 locazione di memoria nella screen ram del carattere che ci interessa.
 
 ## Listato finale
-Per comprendere meglio, di seguito ho scritto un listato che posiziona uno 
+Per comprendere meglio, di seguito ho scritto un listato che posiziona uno
 sprite e lo muove un pixel alla volta lungo l'asse orizzontale (con un
 rudimentale loop di attesa per rendere fluido e visibile il movimento).
 Ad ogni spostamento, viene richiamata una subroutine che rileva il carattere

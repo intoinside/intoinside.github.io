@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Sprite multiplexing - parte 1
+tags: sprite sprite-multiplexing commodore assembly 6502
 ---
 
 Il primo post (quello serio con i contenuti), riguarda lo sprite multiplexing sul Commodore 64.
@@ -22,9 +23,9 @@ uno è specifico per il singolo sprite. Inoltre, in questa modalità, i pixel ha
 Il VIC-II riesce a gestire fino a 8 sprite contemporaneamente presenti sullo schermo e il loro comportamento
 è regolato da una serie di registri di memoria che consentono di:
 * muovere ogni sprite sullo schermo (indirizzi $d000-$d00f e indirizzo $d010 per muoversi oltre la coordinata x = 255)
-* visualizzare o nascondere ogni sprite ($d015)
-* raddoppiare l'altezza o la larghezza ($d017 e $d01d)
-* dichiarare gli sprite HiRes o Multicolor ($d01c)
+* visualizzare o nascondere ogni sprite ([$d015](https://c128lib.github.io/Reference/D000#D015))
+* raddoppiare l'altezza o la larghezza ([$d017](https://c128lib.github.io/Reference/D000#D017) e [$d01d](https://c128lib.github.io/Reference/D000#D01D))
+* dichiarare gli sprite HiRes o Multicolor ([$d01c](https://c128lib.github.io/Reference/D000#D01C))
 ...e poi impostare i colori, rilevare le collisioni e tante altre proprietà.
 
 In questo esempio farò uso di uno sprite creato a mano con [SpritePad](https://csdb.dk/release/?id=132081)
@@ -65,7 +66,7 @@ Init:
       sta $07fe
       sta $07ff
 
-// Imposto la coordinata X di tutti gli sprite 
+// Imposto la coordinata X di tutti gli sprite
       lda #31
       sta $d000
       lda #62
@@ -83,15 +84,15 @@ Init:
       lda #248
       sta $d00e
 
-// Imposto la coordinata Y di tutti gli sprite 
+// Imposto la coordinata Y di tutti gli sprite
       lda #150
-      sta $d001       
-      sta $d003       
-      sta $d005       
-      sta $d007       
-      sta $d009       
-      sta $d00B       
-      sta $d00D       
+      sta $d001
+      sta $d003
+      sta $d005
+      sta $d007
+      sta $d009
+      sta $d00B
+      sta $d00D
       sta $d00F
 
 // Coloro bordo e sfondo di nero

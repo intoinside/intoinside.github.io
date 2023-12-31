@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Memory copy with relocation on Commodore 128
+tags: memcopy relocation commodore-128 c128 assembly
 ---
 
 Suppose you need to copy a full memory page (256 bytes) from one address to another
@@ -44,7 +45,8 @@ algorithm it is necessary to completely change the solution setup. Among the
 innovations that the C128 brings with it is the possibility of relocating page 0
 and page 1.
 The relocation of pages 0/1 is carried out by changing the value of the addresses
-between $D507 and $D50A ([see memory reference](https://c128lib.github.io/Reference/D500#D507)). By appropriately entering the parameters it is possible to
+between $D507 and $D50A ([see memory reference](https://c128lib.github.io/Reference/D500#D507)).
+By appropriately entering the parameters it is possible to
 indicate on which memory area the two pages must be mapped and also on which block
 (the first or second 64Kb of RAM).
 
@@ -184,8 +186,8 @@ This solution also requires the source page in .X and destination page in .Y.
 
       sei             // 2 cycles - 1 byte
       stx $d507       // 4 cycles - 3 byte
-      stx Src1 + 1    // 4 cycles - 3 byte
-      stx Src2 + 1    // 4 cycles - 3 byte
+      stx Src1 + 2    // 4 cycles - 3 byte
+      stx Src2 + 2    // 4 cycles - 3 byte
       tsx             // 2 cycles - 1 byte
       stx TEMP        // 3 cycles - 2 byte
       sty $d509       // 4 cycles - 3 byte

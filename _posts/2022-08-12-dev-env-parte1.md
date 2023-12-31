@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Ambiente di sviluppo - parte 1
+tags: dev-env commodore assembly 6502
 ---
 
 Ciao a tutti! Vi propongo un post che forse doveva arrivare ben prima...
@@ -14,17 +15,17 @@ alle numerose documentazioni disponibili in rete che spiegano bene e in modo
 esaustivo (sicuramente più di quanto potrei fare io) come installare e
 configurare i software.
 
-In questa guida, quindi, saranno elencati solo i vari software che utilizzo, 
-divisi tra software indispensabili e consigliati, con eventuali descrizioni per 
+In questa guida, quindi, saranno elencati solo i vari software che utilizzo,
+divisi tra software indispensabili e consigliati, con eventuali descrizioni per
 farli funzionare insieme.
 
-Nell'elenco sottostante ci sono anche dei punti indicati con *[TBD]* (cioè To 
+Nell'elenco sottostante ci sono anche dei punti indicati con *[TBD]* (cioè To
 Be Done), verranno discussi in un altro post e non sono fondamentali per lo
 sviluppo di base.
 
 Potrei dedicare (FORSE) un ulteriore post su come solitamente strutturo le mie
-applicazioni, cioè impostazione e suddivisione dei file, trattamento delle 
-risorse e cose di questo tipo, più eventualmente altre info sulla gestione tipo 
+applicazioni, cioè impostazione e suddivisione dei file, trattamento delle
+risorse e cose di questo tipo, più eventualmente altre info sulla gestione tipo
 di un progetto (issue, bug, Kanban board, branching con Git ecc...).
 
 Questi ultimi elementi possono sembrare una sovraingegnerizzazione (e in
@@ -54,7 +55,7 @@ necessario per l'ambiente di sviluppo. L'unico elemento con classificazione
 &#x1F535; è consigliato ma, dato che è piuttosto ostico, benché utile, non
 lo inserisco tra gli elementi necessari.
 
-Gli elementi del gruppo &#x1F7E0; sono utili per la creazione delle risorse 
+Gli elementi del gruppo &#x1F7E0; sono utili per la creazione delle risorse
 grafiche e sonore utilizzate nel progetto.
 
 Gli elementi del gruppo &#x1F7E1; consentono di interfacciare l'ambiente con
@@ -66,46 +67,46 @@ GitHub ad una pipeline CI/CD su Circle.Ci.
 
 ## Ambiente di lavoro base &#x1F534;
 
-L'ambiente di lavoro base per lo sviluppo si compone di un editor (VS Code), 
+L'ambiente di lavoro base per lo sviluppo si compone di un editor (VS Code),
 di un assembler (KickAssembler, che a sua volta necessita di un JDK per
 funzionare), l'estensione Kick Assembler 8-Bit Retro Studio che facilita la
-scrittura del codice e aggiunge alcune scorciatoie molto utili per lo sviluppo 
+scrittura del codice e aggiunge alcune scorciatoie molto utili per lo sviluppo
 e, infine, di un emulatore su cui vedere i frutti del proprio lavoro (Vice).
 
-A questa serie di elementi, aggiungo anche un debugger (C64Debugger che ho 
+A questa serie di elementi, aggiungo anche un debugger (C64Debugger che ho
 indicato con &#x1F535;) che, ammetto essere un applicativo piuttosto complicato
 da digerire, può tornare utile per capire come si sta comportando il nostro
 programma. Scaricabile da [qui](https://sourceforge.net/projects/c64-debugger/).
 
 ### Visual Studio Code
-Per prima cosa si procede all'installazione, per chi non lo avesse già, 
-dell'IDE, cioè di Visual Studio Code (https://code.visualstudio.com/). 
-L'IDE (Integrated Development Environment) è il software che consente di 
+Per prima cosa si procede all'installazione, per chi non lo avesse già,
+dell'IDE, cioè di Visual Studio Code (https://code.visualstudio.com/).
+L'IDE (Integrated Development Environment) è il software che consente di
 scrivere il codice sorgente della nostra applicazione.
 
 ![Visual Studio Code da Wikipedia](https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/VS_Code_%28Insiders%29.png/640px-VS_Code_%28Insiders%29.png)
 
-In precedenza ho utilizzato Sublime Text ma ho cambiato da un po' per la 
+In precedenza ho utilizzato Sublime Text ma ho cambiato da un po' per la
 migliore facilità di utilizzo data dalle estensioni disponibili.
 
 ### KickAssembler
-Al termine dell'installazione dell'IDE, possiamo procedere a installare 
+Al termine dell'installazione dell'IDE, possiamo procedere a installare
 l'assembler che prende il nostro codice sorgente e genera i file da lanciare
 nell'emulatore. Il nostro assembler si chiama KickAssembler ma, per funzionare,
-è prima necessario installare Java. 
+è prima necessario installare Java.
 
 Quindi, come prima cosa, si installa il JDK scaricabile a [questo indirizzo](https://www.oracle.com/java/technologies/downloads/).
 
 Successivamente si può procedere all'installazione di KickAssembler,
 da [questo link](http://theweb.dk/KickAssembler/KickAssembler.zip)
 si scarica l'ultima versione disponibile.
-Dopo aver scaricato l'archivio, lo si deve decomprimere in una cartella, ad 
+Dopo aver scaricato l'archivio, lo si deve decomprimere in una cartella, ad
 esempio *C:\\C64\\Tools\\KickAssembler\\*.
 Per verificare che l'operazione è stata eseguita correttamente, nella cartella
-sopraindicata, dovrà essere presente il file KickAss.jar - e altri file).
+sopraindicata, dovrà essere presente il file KickAss.jar - e altri file.
 
 Se l'installazione di KickAssembler è andata a buon fine, si può procedere con
-l'estensione per Visual Studio Code. 
+l'estensione per Visual Studio Code.
 E' sufficiente ricercare l'estensione *Kick Assembler 8-Bit Retro Studio* nello store
 
 ![Estensione per VisualStudio Code](/resources/kick-assembler-extension.png)
@@ -131,7 +132,7 @@ dell'estensione di Kickassembler.
 
 ### Test
 
-Con questa serie di opzioni impostate, si può eseguire un piccolo programma di 
+Con questa serie di opzioni impostate, si può eseguire un piccolo programma di
 test per assicurarsi che tutto, fino a qui, sia definito correttamente.
 
 Quindi, all'interno di VS Code, inserire questo piccolo codice dentro un file
@@ -148,7 +149,7 @@ Entry: {
 }
 ```
 
-Se tutto è impostato correttamente, la scrittura del listato qui sopra e la 
+Se tutto è impostato correttamente, la scrittura del listato qui sopra e la
 sua successiva compilazione tramite la pressione del tasto F6, produrrà un file
 *.prg, che verrà lanciato in Vice e, come risultato, si vedrà il bordo
 colorato di rosso.
@@ -176,7 +177,7 @@ e risulta sufficiente per la maggior parte delle necessità.
 
 ### SpritePad Free
 
-Consente la creazione degli sprite da utilizzare nel progetto. Permette anche 
+Consente la creazione degli sprite da utilizzare nel progetto. Permette anche
 l'organizzazione di gruppi di sprite per produrre le animazioni.
 
 ![SpritePad Free](/resources/spritepad-main-screen.png)
@@ -187,7 +188,7 @@ scaricabile [qui](http://csdb.dk/release/download.php?id=163858).
 ### SidSfx Editor
 
 Ho scoperto questo software da poco ed è una figata mostruosa! Permette di creare
-dei brevi effetti audio da associare al progetto. Non sto parlando delle colonne 
+dei brevi effetti audio da associare al progetto. Non sto parlando delle colonne
 sonore, per quello vi rimando ad altri software, tipo GoatTracker.
 
 ![SidSfx Editor](/resources/sidsfx-main-screen.png)
@@ -198,13 +199,13 @@ Scaricabile [qui](https://agpx.itch.io/sid-sfx-editor).
 
 ## Conclusione
 
-Come scritto nell'introduzione, volutamente NON ho inserito tutorial su come 
+Come scritto nell'introduzione, volutamente NON ho inserito tutorial su come
 utilizzare questi software.
 Sto semplicemente esponendo come è composto il mio ambiente di
 sviluppo. Per informazioni di questo tipo vi invito a leggere la (tanta)
 documentazione a riguardo.
 
-Per ora mi fermo qui, nel prossimo post vedremo i software non necessari, 
+Per ora mi fermo qui, nel prossimo post vedremo i software non necessari,
 marchiati con &#x1F7E1; e &#x1F7E2;.
 
 Se volete chiarimenti su qualche punto di questo post, scrivetemi su

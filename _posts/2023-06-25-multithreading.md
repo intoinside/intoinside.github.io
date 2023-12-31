@@ -1,9 +1,12 @@
 ---
 layout: post
 title: Multi threading
+tags: multithreading commodore-128 c128 assembly
 ---
 
-Multithread a 8 bit? Beh si, può sorprendere ma anche sul processore 6502 è possibile ottenere una certa forma di multithreading. C'è qualche compromesso, ci sono forti limitazioni ma, si, tecnicamente è possibile.
+Multithread a 8 bit? Beh si, può sorprendere ma anche sul processore 6502 è possibile ottenere
+una certa forma di multithreading. C'è qualche compromesso, ci sono forti limitazioni ma, si,
+tecnicamente è possibile.
 
 ## Show me the code, quickly!
 Con lo snippet presente qui https://gist.github.com/intoinside/ff0d07e86685408c9b48ea8888e5cb4c
@@ -50,7 +53,7 @@ Non è tantissimo ma comunque parliamo di qualche decina di cicli di clock.
 
 ### Miscellaneous
 Ci sono inoltre tutte le altre risorse del sistema per le quali va decisa una
-politica di gestione: accesso al disco, accesso ad aree di memoria 
+politica di gestione: accesso al disco, accesso ad aree di memoria
 condivisa, uso di funzionalità del sistema (schermo, suono, joystick...).
 
 ## E quindi?

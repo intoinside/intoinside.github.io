@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Sprite multiplexing - parte 3
+tags: sprite sprite-multiplexing commodore assembly 6502
 ---
 
 ## Altri esempi
@@ -82,7 +83,7 @@ questo effetto
 
 ### Cambio sprite
 Finora abbiamo lavorato sempre con lo stesso sprite, la cui definizione è in fondo
-al file sorgente. E' possibile anche cambiare lo sprite tra due scanline, e lo 
+al file sorgente. E' possibile anche cambiare lo sprite tra due scanline, e lo
 vediamo subito con un esempio. Innanzitutto, in fondo al file, forniamo la definizione
 di un secondo sprite, subito dopo la definizione del primo:
 ```
@@ -97,7 +98,7 @@ Baloon:
 .byte $00,$7f,$00,$01,$ff,$c0,$03,$ff,$e0,$03,$e7,$e0,$07,$d9,$f0,$07
 .byte $df,$f0,$02,$d9,$f0,$03,$e7,$e0,$03,$ff,$e0,$03,$ff,$e0,$02,$ff
 .byte $a0,$01,$7f,$40,$01,$3e,$40,$00,$9c,$80,$00,$9c,$80,$00,$49,$00
-.byte $00,$49,$00,$00,$3e,$00,$00,$3e,$00,$00,$3e,$00,$00,$1c,$00	
+.byte $00,$49,$00,$00,$3e,$00,$00,$3e,$00,$00,$3e,$00,$00,$1c,$00
 ```
 Ricordo, come scritto nel [post 1](/2022/06/02/sprite-multiplexing-parte1/),
 lo sprite può essere generato con [SpritePad](https://csdb.dk/release/?id=132081),
@@ -125,7 +126,7 @@ Perché?
 
 Beh è un problema legato all'ultimo Q/A del post precedente ovvero: sulla seconda
 scanline, il Vic-II ha iniziato a disegnare la mongolfiera prima che venisse completato
-il comando di cambio colore per lo sprite #6 e #7. Il ridisegno del Vic è stato 
+il comando di cambio colore per lo sprite #6 e #7. Il ridisegno del Vic è stato
 più veloce dell'esecuzione delle istruzioni sul processore, pertanto una porzione
 è stata disegnata con il colore vecchio.
 

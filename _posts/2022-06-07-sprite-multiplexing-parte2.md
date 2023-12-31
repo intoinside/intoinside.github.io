@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Sprite multiplexing - parte 2
+tags: sprite sprite-multiplexing commodore assembly 6502
 ---
 
 Ok, bene, compreso il concetto di sprite e ribadito che il C64 non può mostrarne più di 8
@@ -51,7 +52,7 @@ nel frattempo gli sprite sono stati disegnati alla riga 200 (assieme a quelli de
 riga 150)
 
 Q: Perchè l'interrupt viene impostato sulla riga 149 e gli sprite sono posizionati
-sulla riga 150? 
+sulla riga 150?
 
 A: Il posizionamento degli sprite su una determinata area deve avvenire prima che
 quell'area venga disegnata. Se l'interrupt venisse impostato dopo la riga 150, l'area
@@ -75,7 +76,7 @@ Le attività per indicare a quale linea il Vic-II deve lanciare un interrupt son
 Le prime due istruzioni caricano il valore 149 (la scanline dell'interrupt che vogliamo)
 nell'accumulatore e, da qui, nell'indirizzo $d012 (è l'indirizzo del Vic-II preposto
 a questo scopo).
-Le successive 4 istruzioni caricano l'indirizzo della routine che deve essere eseguita 
+Le successive 4 istruzioni caricano l'indirizzo della routine che deve essere eseguita
 al lancio dell'interrupt. E' un indirizzo a 16 bit da caricare in due locazioni da
 8 bit, pertanto in $0314 ci sarà la parte bassa dell'indirizzo (meno significativa)
 della routine e in $0315 ci sarà la parte alta (più significativa).
@@ -88,7 +89,7 @@ Di seguito il listato completo seguito da un po' di spiegazioni.
 
 * = $0810
 Init:
-// SEt Interrupt bit, impedisce alla Cpu di rispondere agli interrupt
+// Set Interrupt bit, impedisce alla Cpu di rispondere agli interrupt
 // Evita che, mentre stiamo definendo le cose, il programma venga
 // interrotto
       sei
@@ -104,7 +105,7 @@ Init:
       sta $07fe
       sta $07ff
 
-// Imposto la coordinata X di tutti gli sprite 
+// Imposto la coordinata X di tutti gli sprite
       lda #31
       sta $d000
       lda #62
@@ -132,7 +133,7 @@ Init:
       sta $dc0d
 
 // Azzera il bit 7 del registro raster del Vic-II
-      and $d011  
+      and $d011
       sta $d011
 
 // Conferma per gli interrupt generati da CIA-1 e CIA-2
@@ -140,11 +141,11 @@ Init:
       lda $dd0d
 
 // Imposto il primo interrupt alla riga 149
-      lda #149    
+      lda #149
       sta $d012
 
 // Imposto la routine all'indirizzo Irq
-      lda #<Irq   
+      lda #<Irq
       sta $0314
       lda #>Irq
       sta $0315
@@ -164,14 +165,14 @@ Init:
 Irq:
 // Spostamento degli sprite sulla riga 150
       lda #150
-      sta $d001       
-      sta $d003       
-      sta $d005       
-      sta $d007       
-      sta $d009       
-      sta $d00B       
-      sta $d00D       
-      sta $d00F       
+      sta $d001
+      sta $d003
+      sta $d005
+      sta $d007
+      sta $d009
+      sta $d00B
+      sta $d00D
+      sta $d00F
 
 // Coloro tutti gli sprite di verde
       lda #GREEN
@@ -188,7 +189,7 @@ Irq:
       lda #199
       sta $d012
 
-// Imposto la routine all'indirizzo Irq2 
+// Imposto la routine all'indirizzo Irq2
       lda #<Irq2
       sta $0314
       lda #>Irq2
@@ -202,15 +203,15 @@ Irq:
 // e riprende la normale esecuzione del programma
       jmp $ea81
 
-Irq2:    
+Irq2:
       lda #200
-      sta $d001       
-      sta $d003       
-      sta $d005       
-      sta $d007       
-      sta $d009       
-      sta $d00B       
-      sta $d00D       
+      sta $d001
+      sta $d003
+      sta $d005
+      sta $d007
+      sta $d009
+      sta $d00B
+      sta $d00D
       sta $d00F
 
       lda #RED
@@ -224,9 +225,9 @@ Irq2:
       sta $d02e
 
       lda #149
-      sta $d012 
+      sta $d012
 
-      lda #<Irq 
+      lda #<Irq
       sta $0314
       lda #>Irq
       sta $0315
