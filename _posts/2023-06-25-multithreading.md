@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Multi threading
-tags: multithreading commodore-128 c128 assembly
+tags: multithreading commodore-128 assembly
 ---
 
 Multithread a 8 bit? Beh si, può sorprendere ma anche sul processore 6502 è possibile ottenere

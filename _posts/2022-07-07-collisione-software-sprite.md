@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Sprite collision
-tags: sprite collision sprite-collision commodore assembly 6502
+tags: sprite collision sprite-collision assembly
 ---
 
 Ben trovati in questo nuovo post. Il filone degli sprite prosegue e questa

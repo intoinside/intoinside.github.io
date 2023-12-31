@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Sprite multiplexing - parte 2
-tags: sprite sprite-multiplexing commodore assembly 6502
+tags: sprite sprite-multiplexing assembly
 ---
 
 Ok, bene, compreso il concetto di sprite e ribadito che il C64 non può mostrarne più di 8

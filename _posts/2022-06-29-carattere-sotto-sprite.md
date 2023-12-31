@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Rilevamento carattere sotto uno sprite
-tags: sprite character commodore assembly 6502
+tags: sprite character assembly
 ---
 
 Eccoci qui con un nuovo post dedicato agli sprite, molto più semplice dei

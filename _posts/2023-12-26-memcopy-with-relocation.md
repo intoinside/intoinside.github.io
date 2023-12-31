@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Memory copy with relocation on Commodore 128
-tags: memcopy relocation commodore-128 c128 assembly
+tags: memcopy relocation commodore-128 assembly
 ---
 
 Suppose you need to copy a full memory page (256 bytes) from one address to another

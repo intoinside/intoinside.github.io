@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Ambiente di sviluppo - parte 1
-tags: dev-env commodore assembly 6502
+tags: setup dev-env assembly kick-assembler gradle
 ---
 
 Ciao a tutti! Vi propongo un post che forse doveva arrivare ben prima...

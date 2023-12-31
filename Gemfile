@@ -9,4 +9,3 @@ gem "github-pages", "~> 228", group: :jekyll_plugins
 gem "jekyll-hashtags", group: :jekyll_plugins
 gem "webrick"
 gem "jekyll-tagging"
-gem "jekyll-tagging-related_posts", group: :jekyll_plugins

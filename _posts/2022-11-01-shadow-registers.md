@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Shadow registers C128
-tags: sprite shadow-registers commodore-128 c128 assembly
+tags: sprite shadow-registers commodore-128 assembly
 ---
 
 Durante la scrittura della libreria [c128lib](https://github.com/c128lib),

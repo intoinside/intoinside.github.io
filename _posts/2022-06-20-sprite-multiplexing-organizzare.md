@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Sprite multiplexing - organizzare
-tags: sprite sprite-multiplexing commodore assembly 6502
+tags: sprite sprite-multiplexing assembly
 ---
 
 ## Premessa

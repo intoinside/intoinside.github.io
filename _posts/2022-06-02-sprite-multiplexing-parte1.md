@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Sprite multiplexing - parte 1
-tags: sprite sprite-multiplexing commodore assembly 6502
+tags: sprite sprite-multiplexing assembly
 ---
 
 Il primo post (quello serio con i contenuti), riguarda lo sprite multiplexing sul Commodore 64.

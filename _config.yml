@@ -12,7 +12,6 @@ plugins:
   - jekyll-seo-tag
   - jekyll-feed
   - jekyll-hashtags
-  - jekyll-tagging-related_posts
 
 # Optimize Jekyll
 exclude:
@@ -27,6 +26,10 @@ exclude:
 tag_page_layout: tag_page
 tag_page_dir: tag
 tag_permalink_style: pretty
+
+related_by: tags
+related_limit: 5
+related_tags: 2
 
 sass:
   sass_dir: _sass

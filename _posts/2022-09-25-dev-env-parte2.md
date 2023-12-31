@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Ambiente di sviluppo - parte 2
-tags: dev-env commodore assembly 6502
+tags: setup dev-env vscode github
 ---
 
 Eccoci qua con la seconda parte del mio ambiente di sviluppo. Stavolta
