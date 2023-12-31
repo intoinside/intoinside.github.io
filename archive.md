@@ -30,6 +30,7 @@ title: Archivio
 
             </div>
           </div>
+          <hr>
           {% endfor %}
       </div>
   </div>

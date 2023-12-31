@@ -12,6 +12,7 @@ plugins:
   - jekyll-seo-tag
   - jekyll-feed
   - jekyll-hashtags
+  - jekyll-tagging-related_posts
 
 # Optimize Jekyll
 exclude:
