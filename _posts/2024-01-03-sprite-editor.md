@@ -29,8 +29,8 @@ editor.
 Cursor is represented as '+' for hi-res sprite or '++' for multicolor sprite.
 You can type from 1 to 8 to select which sprite to edit.
 
-When sprite is selected, working mode is selected and there are some command to edit
-selected sprite.
+When sprite is selected, working mode is active and there are some command to edit
+sprite.
 
 |Key|Description|
 |-|-|
@@ -64,10 +64,13 @@ BSAVE "FILENAME",B0,P3584 TO P4096
 ```
 Where:
 * B0 means the bank (from B0 to B15)
-* P3584 means the starting address where the save begins
-* P4096 means the starting address where the save ends + 1
+* P3584 means the starting address
+* P4096 means the ending address + 1
 
 Starting address and end address are in decimal format.
+
+Memory area from 3584 to 4096 contains all 8 sprites so if you don't want to save them
+all, you can start from 3854 up to 3584 + (num-sprite-to-save * 64).
 
 Saved sprites can be loaded with **BLOAD** command:
 
