@@ -27,7 +27,8 @@ editor.
 </figure>
 
 Cursor is represented as '+' for hi-res sprite or '++' for multicolor sprite.
-You can type from 1 to 8 to select which sprite to edit.
+You can type from 1 to 8 to select which sprite to edit. Otherwise you can press
+<span class="keystroke">RETURN</span> to exit from editor.
 
 When sprite is selected, working mode is active and there are some command to edit
 sprite.
@@ -57,7 +58,11 @@ sprite.
 <figcaption>Example of defined hi-res sprite - from <a href="https://www.c64-wiki.com/wiki/File:SPRDEF-Smiley.png">c64-wiki</a></figcaption>
 </figure>
 
-Once sprite is defined, it can be saved to disk with **BSAVE** command
+Once sprite is defined, you can quit working mode (with
+<span class="keystroke">SHIFT</span> + <span class="keystroke">RETURN</span>)
+and sprite will be saved in memory. By exiting from editor
+(with <span class="keystroke">RETURN</span>), it can be saved to disk with
+**BSAVE** command
 
 ``` Assembly
 BSAVE "FILENAME",B0,P3584 TO P4096
