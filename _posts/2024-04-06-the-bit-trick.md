@@ -22,7 +22,7 @@ END:    LDA #$12
 ```
 There are three entrypoint used for setting .X register as index for the
 last <code>STA</code> instruction. These instructions uses 17 bytes and
-requires 17 cycles (when jmuping on STEP1 or STEP2).
+requires 12 cycles (when jmuping on STEP1 or STEP2).
 
 A first optimization consist in changing <code>JMP END</code>, which is
 3by/3cy, with a BNE (because all there LDX don't set zero-flag)
