@@ -21,7 +21,7 @@ inserted in the drive and searches for the boot sector by reading
 track 1 sector 0 into buffer at $B00.
 
 Then the process is handled by Kernal subroutine called BOOTCALL at
-[$FF53](https://c128lib.github.io/Reference/FF47#FF53).
+[$FF53](https://c128lib.github.io/Reference/E000#FF53).
 
 {% include note.html note_content="BOOTCALL requires parameters to be set, check documentation" %}
 
@@ -65,13 +65,13 @@ the name of a file to be loaded, and the drive number and a
 colon are placed immediately before the name in the buffer. If
 a filename is found, the routine attempts to load a file with
 that name into bank 0. Because the Kernal
-[LOAD](https://c128lib.github.io/Reference/FF47#FFD5)
+[LOAD](https://c128lib.github.io/Reference/E000#FFD5)
 routine is used, this file must be PRG (program) type. This file is always
 loaded into bank 0, regardless of the bank number specified
 for boot sectors.
 
 After the file is loaded (or if no filename is specified), the
-[JSRFAR](https://c128lib.github.io/Reference/FF47#FF6E) address pointer
+[JSRFAR](https://c128lib.github.io/Reference/E000#FF6E) address pointer
 ([$03-$04](https://c128lib.github.io/Reference/0000#03))
 holds the address of the buffer location following the end-of-filename zero
 byte, and the JSRFAR bank ([$02](https://c128lib.github.io/Reference/0000#02))
