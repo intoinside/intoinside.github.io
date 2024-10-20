@@ -99,6 +99,34 @@ As a final note, remember to transfer control to the loaded code. A simple <code
     JMP $4000   // Supposing that $4000 is the absolute address of the code loaded
 ```
 
+Do you remember when you loaded a program and the screen started showing colored flashes that ended when the loading was complete?
+They are called loading bars and they were used to let the user know that the loading was proceeding without problems.
+The <code>JLOAD</code> routine does not provide the possibility to verify what is happening and returns its results in case of error or when loading is finished. We can still understand what it is doing using a little trick.
+
+<code>JLOAD</code> can be interrupted by pressing the RUN/STOP button, so in the Kernal it is periodically checked if this button is pressed. The check is done with a <code>JSR $FFE1</code>.
+At the address <code>$FFE1</code> there is the <code>JSTOP</code> routine which is a simple <code>JMP ($0328)</code>. It means that the address (16 bits) present at the location <code>$0328</code> (Indirect vector for the <code>STOP</code> routine) is loaded and a <code>JMP</code> is done on it. The standard routine checks if the <code>STOP</code> button is pressed. It can be modified to add a loading bar before checking the state of the button.
+
+By adding this code before calling <code>JLOAD</code>, JSTOP call can be redirected to a custom routine called <code>LoadingBars</code>:
+
+``` Assembly
+    lda #<LoadingBars
+    sta $0328
+    lda #>LoadingBars
+    sta $0329
+```
+
+LoadingBars routine it's quite simple, it changes the border color to create a flashing bar effect, then a jmp to original routine is done.
+
+``` Assembly
+LoadingBars: {
+    inc $d020
+    nop
+
+    jmp $f66e
+}
+```
+
+## Coupling
 A coupling problem is highlighted that requires knowing in advance the absolute address on which the code will be read and inserted. This address is read by the JLOAD but is not exposed so it is necessary to follow a different approach.
 
 Instead of the JLOAD, it is necessary to read the first two bytes to build the absolute address. Then, one byte at a time must be read until the end of the file, writing the read code in the address read before each time.
