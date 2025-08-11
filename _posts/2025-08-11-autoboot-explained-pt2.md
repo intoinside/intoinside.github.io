@@ -30,7 +30,7 @@ L'autoboot dovrà essere generato con questa struttura:
 
 <pre>
 0000 43 42 4D 00 00 00 00 41   CBM....A
-0008 55 54 4F 42 4F 4F 54 20   UTOBOOT 
+0008 55 54 4F 42 4F 4F 54 20   UTOBOOT
 0010 46 4F 52 20 43 31 32 38   FOR C128
 0018 00 00 A2 20 A0 0B 4C A5   ........
 0020 AF 52 55 4E 22 41 55 54   .RUN"AUT
@@ -130,7 +130,7 @@ A0 0B     LDY #$0B
 4C A5 AF  JMP $AFA5
 </pre>
 
-I valori inseriti in .X e .Y rappresentano l'indirizzo immediatamente precedente alla stringa 
+I valori inseriti in .X e .Y rappresentano l'indirizzo immediatamente precedente alla stringa
 da scrivere (per questo esempio la stringa si trova a $0B21, in .Y c'è l'hi-byte $0B
 e in .X c'è il lo-byte -1 cioè $20).
 
@@ -154,9 +154,83 @@ NEW
 DSAVE "AUTOBOOT-C128"
 ```
 
-Per la parte di autoboot del C128, abbiamo finito, basta chiamare il comando BOOT oppure effettuare un reset della macchina. In questo caso, il risultato su monitor 80 colonne dovrebbe essere questo:
+Per la parte di autoboot del C128, abbiamo finito, basta chiamare il comando BOOT oppure effettuare un reset della macchina per verificare il funzionamento.
+In questo caso, il risultato su monitor 80 colonne dovrebbe essere questo:
 
 ![Booting message](/resources/autoboot-pt2.png)
+
+# Autoboot C128 in modalità C64
+
+L'autoboot per la modalità C64 considera tutte le attività svolte al prunto precedente e richiede la modifica del programma avviato dopo il boot. Per separare meglio i concetti, di seguito è riportato il nuovo listato che crea il boot sector. Le uniche differenze consistono nella stringa che segue il testo "BOOTING" e il nome del file avviato che si chiamerà "AUTOBOOT-C64".
+
+Come per l'esempio precedente è conveniente creare un disco vuoto eseguendo il listato BASIC/ML:
+
+``` Basic
+10 REM CREATE BOOT SECTOR
+20 DCLEAR: OPEN 15, 8, 15: OPEN 2, 8, 2, "#": PRINT# 15, "B-P:2, 0"
+30 READ D$: D = DEC(D$): IF D>255 THEN 50
+40 PRINT# 2, CHR$(D); : GOTO 30
+50 PRINT# 15, "U2;2, 0, 1, 0"
+60 PRINT DS$ : CLOSE 2 : CLOSE 15
+70 DATA 43, 42, 4D, 00, 00, 00, 00
+80 DATA 41, 55, 54, 4F, 42, 4F, 4F, 54, 20, 46, 4F, 52, 20, 43, 36, 34
+90 DATA 00, 00, A2, 1F, A0, 0B, 4C, A5, AF, 52, 55, 4E
+100 DATA 22, 41, 55, 54, 4F, 42, 4F, 4F, 54, 2D, 43, 36, 34, 22, 00
+1000 DATA 100
+```
+
+Successivamente si deve generare il file (AUTOBOOT-C64) che, in esecuzione nella modalità 128, prepara la transizione verso la modalità C64 e l'avvio del bootloader ("BOOT64"). Il bootloader in modalità C64 caricherà finamente il programma desiderato. Per questo esempio il programma lanciato in modalità C64 si chiamerà "HELLO-WORLD".
+
+``` Basic
+10 A = 32768: PRINT "(SWITCH 40 COLUMN DISPLAY) "
+20 READ D$: IF D$ = "-1" THEN GO64
+30 POKE A, DEC (D$):A = A + 1: GO TO 20
+40 DATA 09, 80, 5E, FE, C3, C2, CD, 38, 30
+50 DATA 8E, 16, D0, 20, A3, FD, 20, 50, FD
+60 DATA 20, 15, FD, 20, 5B, FF, 58
+70 DATA 20, 53, E4, 20, BF, E3, 20, 22, E4
+80 DATA A2, FB, 9A
+90 DATA A2, 00, BD, 41, 80, F0, 06
+100 DATA 20, D2, FF, E8, D0, F5
+110 DATA A9, 0D, 8D, 77, 02, 8D, 78, 02
+120 DATA A9, 02, 85, C6
+130 DATA 4C, 74, A4
+140 DATA 0D, 4C, 4F, 41, 44, 22, 42, 4F, 4F, 54, 36, 34, 22, 2C, 38
+150 DATA 0D, 0D, 0D, 0D, 0D, 52, 55, 4E, 91, 91, 91, 91, 91, 91, 91, 0, -1
+```
+
+Il programma di autoboot in modalità C128 si incarica aggiungere del codice ML all'indirizzo $8000 (32768) in modo da "simulare" una cartridge. Al termine dell'aggiunta del codice, viene lanciato il comando BASIC GO64.
+
+All'avvio successivo, la modalità C64 esegue il classico reset, verificando la presenza di eventuali cartridge. All'indirizzo specificato troverà il codice aggiunto dal programma AUTOBOOT-C64. Da notare che il comando GO64 non cancella la Ram per cui il contenuto è preservato.
+
+Il codice aggiunto per simulare una cartridge, effettua le attività classiche dell'avvio del C64 (IOINIT, RAMTAS, RESTOR, CINT...) a cui aggiunge la scrittura su schermo del comando di load (LOAD"BOOT64",8) e la simulazione della pressione del tasto return per il caricamento e l'esecuzione.
+
+Al termine della sequenza di avvio viene caricato e avviato il programma BOOT64 che ha questo listato:
+
+``` Basic
+10 REM C64 ML PROG LOADER EXAMPLE
+20 IF A = 0 THEN A = 1: LOAD "HELLO-WORLD", 8, 1
+30 SA = 52224: REM START ADDRESS
+40 SYS SA
+```
+
+Infine ecco un listato di esempio per "HELLO-WORLD"
+
+``` Basic
+10 PRINT "HELLO WORLD FROM C64!!"
+```
+
+Al riavvio del C128 e al termine delle varie fasi, le schermate dello schermo 80 colonne e 40 colonne dovrebbero essere queste:
+
+![Booting message 80 col](/resources/autoboot-pt2-c64-80col.png)
+![Booting message 40 col](/resources/autoboot-pt2-c64-40col.png)
+
+## Download
+
+Di seguito i link delle immagini dei due dischi:
+
+* [Autoboot C128](/resources/autoboot-c128.d71)
+* [Autoboot C64](/resources/autoboot-c64.d64)
 
 # Links
 
