@@ -4,29 +4,24 @@ title: Autoboot explained pt2
 tags: commodore-128 autoboot boot autoboot-c64 commodore-64
 ---
 
-Esempio pratico per capire come funziona l'autoboot in due modalità differenti:
+Practical example to understand how autoboot works in two different modes:
 
-* autoboot classico per C128
-* autoboot che funziona per la modalità C64 del C128
+* classic autoboot for C128
+* autoboot that works for C128's C64 mode
 
-Come detto nel [precedente articolo](/2024/04/07/autoboot-explained), l'autoboot
-è una funzionalità introdotta nel Commodore 128. Pertanto non è possibile usufruirne nel C64...
+As mentioned in the [previous article](/2024/04/07/autoboot-explained), autoboot is a feature introduced in the Commodore 128. Therefore, it is not possible to use it on the C64...
 
-In realtà è possibile, ma è utilizzabile solo nella modalità C64 offerta dal C128. L'usabilità
-di questa funzione perciò risulta molto limitata ma è interessante vederla dal punto di vista tecnico.
-Ora vedremo come si può implemetare l'autoboot sia nella modalità pura C128 che nella modalità C64.
+It's actually possible, but it can only be used in the C64 mode offered by the C128. The usability of this feature is therefore very limited, but it's interesting to see it from a technical standpoint. Now we'll see how to implement autoboot in both pure C128 mode and C64 mode.
 
 # Autoboot C128
 
-Come detto, il disco che consentirà l'autoboot deve essere modificato in modo che il C128,
-dopo l'accensione (o quando si utilizza il comando BOOT), sia in grado di avviare il programma
-desiderato.
+As mentioned, the disk that will allow autoboot must be modified so that the C128, after switching on (or when using the BOOT command), is able to start the desired program.
 
-{% include note.html note_content="Il codice qui presente è stato ottenuto modificando esempi disponibili in rete, in fondo alla pagina sono elencate le risorse" %}
+{% include note.html note_content="Code here was obtained by modifying examples available online, the resources are listed at the bottom of the page" %}
 
-La versione più semplice prevede la creazione di un disco con autoboot che avvia un programma.
+The simplest version involves creating an autoboot disk that launches a program.
 
-L'autoboot dovrà essere generato con questa struttura:
+The autoboot should be generated with this structure:
 
 <pre>
 0000 43 42 4D 00 00 00 00 41   CBM....A
@@ -38,8 +33,7 @@ L'autoboot dovrà essere generato con questa struttura:
 0030 32 38 22 00 00 00 00 00   28".....
 </pre>
 
-Per generare il boot sector dobbiamo partire da un disco vuoto (con VICE lo si può creare
-dal menu File) e successivamente possiamo utilizzare il programma BASIC/ML sottostante:
+To generate the boot sector we need to start from a blank disk (with VICE you can create it from the File menu) and then we can use the BASIC/ML program below:
 
 ``` Basic
 10 REM CREATE BOOT SECTOR
@@ -55,62 +49,61 @@ dal menu File) e successivamente possiamo utilizzare il programma BASIC/ML sotto
 1000 DATA 100
 ```
 
-## Descrizione
+## Description
 
 ``` Basic
 20 DCLEAR: OPEN 15, 8, 15: OPEN 2, 8, 2, "#": PRINT# 15, "B-P:2, 0"
 ```
 
-* DCLEAR: azzera la directory buffer del drive (serve a partire da uno stato "pulito")
-* OPEN 15, 8, 15: apre il canale di comando (15) verso il drive 8.
-* OPEN 2, 8, 2, "#": apre il canale dati (2) verso il drive 8, modalità raw ("#" significa settore fisico).
-* PRINT# 15, "B-P:2, 0": comando al drive per posizionare la testina al settore di boot.
-  * "B-P" significa "Block Position".
-  * Parametri 2, 0 = canale 2, settore 0 della traccia di boot (che di solito è traccia 1, settore 0 nel C128).
+* DCLEAR: clears the drive's directory buffer (useful for starting from a "clean" state)
+* OPEN 15, 8, 15: opens the command channel (15) to drive 8.
+* OPEN 2, 8, 2, "#": opens the data channel (2) to drive 8, raw mode ("#" means physical sector).
+* PRINT# 15, "BP:2, 0": command to the drive to position the head to the boot sector.
+  * "BP" means "Block Position".
+  * Parameters 2, 0 = channel 2, sector 0 of the boot track (which is usually track 1, sector 0 in the C128).
 
 ``` Basic
 30 READ D$: D = DEC(D$): IF D>255 THEN 50
 ```
 
-* READ D$: legge un valore dal DATA, come stringa (può contenere valori esadecimali o numerici).
-* D = DEC(D$): converte da stringa (esadecimale o decimale) in numero decimale.
-* IF D>255 THEN 50: se il valore è maggiore di 255 allora fine dei dati veri e propri, salta alla riga 50.
+* READ D$: reads a value from DATA, as a string (can contain hexadecimal or numeric values).
+* D = DEC(D$): converts from string (hexadecimal or decimal) to decimal number.
+* IF D>255 THEN 50: if the value is greater than 255 then end of actual data, skip to line 50.
 
 ``` Basic
 40 PRINT# 2, CHR$(D); : GOTO 30
 ```
 
-Invia il byte convertito (CHR$(D)) al canale dati 2 (quindi lo scrive direttamente nel settore). Il punto e virgola ; evita l'inserimento del terminatore CR/LF. Poi torna alla riga 30 per leggere il prossimo byte.
+Send the converted byte (CHR$(D)) to data channel 2 (thus writing it directly to the sector). The semicolon ; avoids inserting the CR/LF terminator. Then return to line 30 to read the next byte.
 
 ``` Basic
 50 PRINT# 15, "U2;2, 0, 1, 0"
 ```
 
-* "U2" è il comando drive per scrivere un blocco (Block Write).
-  * 2 = canale di dati aperto
-  * 0, 1, 0 = traccia 1, settore 0 (boot sector standard per il C128)
+* "U2" is the drive command to write a block (Block Write).
+  * 2 = open data channel
+  * 0, 1, 0 = track 1, sector 0 (standard boot sector for the C128)
 
-In pratica qui il drive scrive fisicamente il settore con i dati appena inviati.
+In practice, here the drive physically writes the sector with the data just sent.
 
 ``` Basic
 60 PRINT DS$ : CLOSE 2 : CLOSE 15
 ```
 
-* PRINT DS$: Mostra lo stato del drive (DS$ contiene il messaggio di stato).
-* CLOSE 2 / CLOSE 15: Chiude i canali aperti.
+* PRINT DS$: shows the drive status (DS$ contains the status message)
+* CLOSE 2 / CLOSE 15: closes open channels
 
 ``` Basic
 70 DATA 43, 42, 4D, 00, 00, 00, 00
 ```
 
-43 42 4D in ASCII è "CBM", identificatore del boot block.
-I quattro byte successivi a 00 sono:
+43 42 4D in ASCII is "CBM", the boot block identifier. The four bytes after 00 are:
 
-* l'indirizzo (16bit) in cui memorizzare altri dati letti da disco
-* il bank in cui memorizzare i dati
-* il numero di settori da leggere
+* the address (16 bit) in which to store other data read from disk
+* the bank in which to store the data
+* the number of sectors to read
 
-Dato che il numero di settori è 0, i tre byte precedenti non sono significativi.
+Since the number of sectors to read is 0, the previous three bytes are not significant.
 
 ``` Basic
 80 DATA 41, 55, 54, 4F, 42, 4F, 4F, 54, 20, 46, 4F, 52, 20, 43, 31, 32, 38
@@ -122,7 +115,7 @@ ASCII: "AUTOBOOT FOR C128"
 90 DATA 00, 00, A2, 20, A0, 0B, 4C, A5, AF, 52, 55, 4E
 ```
 
-Contiene due byte zero usati come terminatore del boot message (definito in riga 80) e del program name (non utilizzato), poi codice macchina:
+Contains two zero bytes used as terminator of the boot message (defined on line 80) and the program name (not used), then machine code:
 
 <pre>
 A2 20     LDX #$20
@@ -130,12 +123,9 @@ A0 0B     LDY #$0B
 4C A5 AF  JMP $AFA5
 </pre>
 
-I valori inseriti in .X e .Y rappresentano l'indirizzo immediatamente precedente alla stringa
-da scrivere (per questo esempio la stringa si trova a $0B21, in .Y c'è l'hi-byte $0B
-e in .X c'è il lo-byte -1 cioè $20).
+The values inserted in .X and .Y represent the address immediately preceding the string to be written (for this example the string is located at $0B21, in .Y there is the hi-byte $0B and in .X there is the lo-byte -1 i.e. $20).
 
-52 55 4E in ASCII è "RUN" (stringa di comando BASIC). Il nome del programma
-da caricare è definito nella riga 100:
+52 55 4E in ASCII is "RUN" (BASIC command string). The name of the program to be loaded is defined on line 100:
 
 ``` Basic
 100 DATA 22, 41, 55, 54, 4F, 42, 4F, 4F, 54, 2D, 43, 31, 32, 38, 22, 00
@@ -143,10 +133,9 @@ da caricare è definito nella riga 100:
 
 ASCII: "AUTOBOOT-C128" tra virgolette, poi terminatore 00.
 
-Mandando in esecuzione questo programma, il boot sector del disco viene modificato in modo da avviare il
-programma "AUTOBOOT-C128". Adesso dobbiamo creare questo programma.
+By running this program, the disk's boot sector is modified to run the "AUTOBOOT-C128" program. Now we need to create this program.
 
-Trattandosi di un programma di esempio, è sufficiente digitare i comandi:
+Since this is an example program, just type the commands:
 
 ``` Basic
 NEW
@@ -154,16 +143,15 @@ NEW
 DSAVE "AUTOBOOT-C128"
 ```
 
-Per la parte di autoboot del C128, abbiamo finito, basta chiamare il comando BOOT oppure effettuare un reset della macchina per verificare il funzionamento.
-In questo caso, il risultato su monitor 80 colonne dovrebbe essere questo:
+For the C128 autoboot part, we're done; just call the BOOT command or reset the machine to verify its operation. In this case, the output on an 80-column monitor should look like this:
 
 ![Booting message](/resources/autoboot-pt2.png)
 
 # Autoboot C128 in modalità C64
 
-L'autoboot per la modalità C64 considera tutte le attività svolte al prunto precedente e richiede la modifica del programma avviato dopo il boot. Per separare meglio i concetti, di seguito è riportato il nuovo listato che crea il boot sector. Le uniche differenze consistono nella stringa che segue il testo "BOOTING" e il nome del file avviato che si chiamerà "AUTOBOOT-C64".
+Autoboot for C64 mode takes into account all the activities performed in the previous step and requires modification of the program launched after booting. To better separate the concepts, the following is the new listing that creates the boot sector. The only differences are the string following the text "BOOTING" and the name of the launched file, which will be called "AUTOBOOT-C64".
 
-Come per l'esempio precedente è conveniente creare un disco vuoto eseguendo il listato BASIC/ML:
+As with the previous example, it is convenient to create a blank disk. This BASIC/ML code creates boot sector:
 
 ``` Basic
 10 REM CREATE BOOT SECTOR
@@ -179,7 +167,9 @@ Come per l'esempio precedente è conveniente creare un disco vuoto eseguendo il 
 1000 DATA 100
 ```
 
-Successivamente si deve generare il file (AUTOBOOT-C64) che, in esecuzione nella modalità 128, prepara la transizione verso la modalità C64 e l'avvio del bootloader ("BOOT64"). Il bootloader in modalità C64 caricherà finamente il programma desiderato. Per questo esempio il programma lanciato in modalità C64 si chiamerà "HELLO-WORLD".
+There's no difference with previous boot sector creator, except for the two things mentioned above.
+
+Next, you need to generate the file (AUTOBOOT-C64) that, when running in 128 mode, prepares the transition to C64 mode and starts the bootloader ("BOOT64"). The bootloader in C64 mode will finally load the desired program. For this example, the program launched in C64 mode will be called "HELLO-WORLD".
 
 ``` Basic
 10 A = 32768: PRINT "(SWITCH 40 COLUMN DISPLAY) "
@@ -199,13 +189,13 @@ Successivamente si deve generare il file (AUTOBOOT-C64) che, in esecuzione nella
 150 DATA 0D, 0D, 0D, 0D, 0D, 52, 55, 4E, 91, 91, 91, 91, 91, 91, 91, 0, -1
 ```
 
-Il programma di autoboot in modalità C128 si incarica aggiungere del codice ML all'indirizzo $8000 (32768) in modo da "simulare" una cartridge. Al termine dell'aggiunta del codice, viene lanciato il comando BASIC GO64.
+The C128 autoboot program adds some ML code to address $8000 (32768) to simulate a cartridge. Once the code has been added, the GO64 BASIC command is launched.
 
-All'avvio successivo, la modalità C64 esegue il classico reset, verificando la presenza di eventuali cartridge. All'indirizzo specificato troverà il codice aggiunto dal programma AUTOBOOT-C64. Da notare che il comando GO64 non cancella la Ram per cui il contenuto è preservato.
+On the next boot, C64 mode performs a classic reset, checking for any cartridges. At the specified address, it will find the code added by the AUTOBOOT-C64 program. Note that the GO64 command does not erase the RAM, so its contents are preserved.
 
-Il codice aggiunto per simulare una cartridge, effettua le attività classiche dell'avvio del C64 (IOINIT, RAMTAS, RESTOR, CINT...) a cui aggiunge la scrittura su schermo del comando di load (LOAD"BOOT64",8) e la simulazione della pressione del tasto return per il caricamento e l'esecuzione.
+The code added to simulate a cartridge performs the classic C64 boot activities (IOINIT, RAMTAS, RESTOR, CINT…) to which it adds the writing of the load command on the screen (LOAD"BOOT64",8) and the simulation of pressing the return key for loading and execution.
 
-Al termine della sequenza di avvio viene caricato e avviato il programma BOOT64 che ha questo listato:
+At the end of the boot sequence, the BOOT64 program is loaded and started, which has this listing:
 
 ``` Basic
 10 REM C64 ML PROG LOADER EXAMPLE
@@ -214,20 +204,20 @@ Al termine della sequenza di avvio viene caricato e avviato il programma BOOT64 
 40 SYS SA
 ```
 
-Infine ecco un listato di esempio per "HELLO-WORLD"
+Finally here is an example listing for "HELLO-WORLD":
 
 ``` Basic
 10 PRINT "HELLO WORLD FROM C64!!"
 ```
 
-Al riavvio del C128 e al termine delle varie fasi, le schermate dello schermo 80 colonne e 40 colonne dovrebbero essere queste:
+When the C128 restarts and the various steps are completed, the 80-column and 40-column screens should look like this:
 
 ![Booting message 80 col](/resources/autoboot-pt2-c64-80col.png)
 ![Booting message 40 col](/resources/autoboot-pt2-c64-40col.png)
 
 ## Download
 
-Di seguito i link delle immagini dei due dischi:
+Below are links to the images of the two discs:
 
 * [Autoboot C128](/resources/autoboot-c128.d71)
 * [Autoboot C64](/resources/autoboot-c64.d64)
@@ -236,4 +226,5 @@ Di seguito i link delle immagini dei due dischi:
 
 * [Atarimagazines.com - Boot 64 for 128](https://www.atarimagazines.com/compute/issue77/Boot_64_For_128.php)
 * [Istennyila.hu - Writing Platform Independent Code on CBM Machines](https://istennyila.hu/dox/cbmcode.pdf)
-* [Infinite-loop.at - Documentazione comandi floppy](https://www.infinite-loop.at/Power64/Documentation/Power64-Leggimi/AB-Comandi_Floppy.html)
+* [Infinite-loop.at - Floppy command documentation](https://www.infinite-loop.at/Power64/Documentation/Power64-Leggimi/AB-Comandi_Floppy.html)
+* [Github - rhalkyard/128boot64](https://github.com/rhalkyard/128boot64)
