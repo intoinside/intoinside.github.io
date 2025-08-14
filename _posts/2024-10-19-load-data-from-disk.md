@@ -12,7 +12,7 @@ It is necessary to design the program structure and the memory areas involved we
 
 It all revolves around the Kernal <code>JLOAD</code> call that does the actual loading. Before calling it, however, you need to make some preliminary calls and set several parameters.
 
-The first call to make is to the <code>JSETNAM</code> routine that sets the name of the file on disk to load.
+The first call to make is to the <code>JSETNAM</code> ([$FFBD](https://c128lib.github.io/Reference/E000#FFBD)) routine that sets the name of the file on disk to load.
 
 The routine expects parameters in the three registers .A, .X, .Y.
 
@@ -26,7 +26,7 @@ In .X and .Y you must enter the memory address that contains the name of the fil
     jsr $FFBD
 ```
 
-Next, you need to call the <code>JSETBNK</code> routine that sets the memory bank used to provide the parameters and to receive the read code.
+Next, you need to call the <code>JSETBNK</code> ([$FF68](https://c128lib.github.io/Reference/E000#FF68)) routine that sets the memory bank used to provide the parameters and to receive the read code.
 In .A, you need to insert the number of the bank for the parameters, while in .X, you need to insert the number of the bank where the data will be written.
 
 ``` Assembly
@@ -35,7 +35,7 @@ In .A, you need to insert the number of the bank for the parameters, while in .X
     jsr $FF68
 ```
 
-The last preparatory routine to call is <code>JSETLFS</code> which is used to specify the logical file number, the device number and the secondary address for I/O operations.
+The last preparatory routine to call is <code>JSETLFS</code> ([$FFBA](https://c128lib.github.io/Reference/E000#FFBA)) which is used to specify the logical file number, the device number and the secondary address for I/O operations.
 In .A you enter the logical file number, in .X you enter the device number and in .Y you enter the secondary address for I/O operations.
 
 ``` Assembly
@@ -45,7 +45,7 @@ In .A you enter the logical file number, in .X you enter the device number and i
     jsr $FFBA
 ```
 
-Finally, it is possible to call the <code>JLOAD</code> routine that performs the disk reading.
+Finally, it is possible to call the <code>JLOAD</code> ([$FFD5](https://c128lib.github.io/Reference/E000#FFD5)) routine that performs the disk reading.
 The routine can perform a read or a check and this option must be specified via the .A register
 In .A the value 0 must be inserted, any other value would activate the check function.
 
@@ -131,3 +131,10 @@ A coupling problem is highlighted that requires knowing in advance the absolute 
 
 Instead of the JLOAD, it is necessary to read the first two bytes to build the absolute address. Then, one byte at a time must be read until the end of the file, writing the read code in the address read before each time.
 It is a longer procedure to write and subject to errors but it allows us to obtain the absolute address and make it available externally.
+
+# References
+
+* JSETBNK [$FF68](https://c128lib.github.io/Reference/E000#FF68)
+* JSETLFS [$FFBA](https://c128lib.github.io/Reference/E000#FFBA)
+* JSETNAM [$FFBD](https://c128lib.github.io/Reference/E000#FFBD)
+* JLOAD [$FFD5](https://c128lib.github.io/Reference/E000#FFD5)
