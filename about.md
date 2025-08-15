@@ -3,8 +3,6 @@ layout: page
 title: About
 ---
 
-<p class="message">
-  #workinprogress
-</p>
+I share experiences, knowledge, and information about Commodore technology from the 1980s, particularly the Commodore 64 and 128.
 
-Work in progress...
+Feel free to contact me by email (raffaele.intorcia@gmail.com) or check out my projects on [Github](https://github.com/intoinside?tab=repositories).
