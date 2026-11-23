@@ -7,10 +7,7 @@
     <header class="masthead">
       <h3 class="masthead-title">
         <a href="{{ site.baseurl }}/" title="Home">{{ site.title }}</a>
-        <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js"
-          data-name="bmc-button" data-slug="raffaeleinr" data-color="#FFDD00" data-emoji="☕" data-font="Cookie"
-          data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000"
-          data-coffee-color="#ffffff"></script>
+
         <nav class="nav">
           {% for nav in site.nav %}
           <small><a href="{{ nav.url }}">{{ nav.title }}</a></small>
@@ -56,6 +53,9 @@
     ga("send", "pageview");
   </script>
   {% endif %}
+  <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js"
+    data-id="raffaeleinr" data-description="Support me on Buy me a coffee!" data-message="" data-color="#5F7FFF"
+    data-position="Right" data-x_margin="18" data-y_margin="18"></script>
 </body>
 
 </html>
